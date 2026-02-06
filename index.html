@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Paula 💘 San Valentín</title>
+  <meta name="theme-color" content="#ff4d8d" />
+  <style>
+    :root{
+      --bg1:#0b1220; --bg2:#171a2e;
+      --card:rgba(15,23,42,.72);
+      --text:#e5e7eb; --muted:#a1a1aa;
+      --pink:#ff4d8d; --yes:#22c55e; --no:#ef4444;
+      --ring: rgba(255,77,141,.35);
+      --shadow: 0 20px 60px rgba(0,0,0,.35);
+      --border: 1px solid rgba(255,255,255,.10);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(255,77,141,.25), transparent 60%),
+        radial-gradient(900px 500px at 90% 20%, rgba(34,197,94,.18), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    .wrap{min-height:100%; display:flex; align-items:center; justify-content:center; padding:18px;}
+    .card{
+      width:min(560px, 100%);
+      background:var(--card);
+      border:var(--border);
+      backdrop-filter: blur(10px);
+      border-radius:22px;
+      padding:18px;
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .top{display:flex; justify-content:space-between; align-items:center; gap:10px;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color:var(--muted); font-size:13px; user-select:none;
+    }
+
+    .title{
+      margin:14px 0 6px;
+      font-size: clamp(26px, 5vw, 36px);
+      line-height:1.1;
+      letter-spacing:-.02em;
+      text-align:center;
+    }
+    .subtitle{margin:0 0 14px; text-align:center; color:var(--muted); font-size:14px;}
+    .hero{
+      display:grid;
+      gap:12px;
+      margin:10px 0 14px;
+    }
+
+    .photo{
+      width:100%;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      overflow:hidden;
+      background: rgba(255,255,255,.03);
+      box-shadow: 0 12px 30px rgba(0,0,0,.25);
+      aspect-ratio: 16/10;
+      position:relative;
+    }
+    .photo img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+      transform: scale(1.02);
+    }
+    .photo .overlay{
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.50));
+      display:flex; align-items:flex-end; justify-content:space-between;
+      padding:12px;
+      gap:12px;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.12);
+      font-size:12px;
+      color:rgba(255,255,255,.85);
+      user-select:none;
+      backdrop-filter: blur(6px);
+    }
+
+    .questionBox{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      border-radius:18px;
+      padding:14px;
+    }
+    .question{
+      font-size: clamp(18px, 3.6vw, 22px);
+      text-align:center;
+      margin:0 0 8px;
+    }
+    .hint{
+      text-align:center;
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .play{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      align-items:center;
+      margin-top:12px;
+      flex-wrap:wrap;
+      position:relative;
+      min-height: 60px;
+    }
+    button{
+      border:none;
+      padding:14px 16px;
+      border-radius:14px;
+      font-weight:800;
+      font-size:16px;
+      color:#07101f;
+      cursor:pointer;
+      min-width: 160px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.28);
+      transition: transform .12s ease, filter .12s ease;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+    }
+    button:active{transform: scale(.98)}
+    button:focus{outline: 4px solid var(--ring); outline-offset:2px;}
+    .yes{background: linear-gradient(180deg, rgba(34,197,94,1), rgba(34,197,94,.78));}
+    .no {background: linear-gradient(180deg, rgba(239,68,68,1), rgba(239,68,68,.78)); position:fixed; left:-9999px; top:-9999px;}
+
+    .toast{
+      position:fixed;
+      left:50%;
+      top:16px;
+      transform:translateX(-50%);
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.12);
+      padding:10px 12px;
+      border-radius:14px;
+      color: rgba(255,255,255,.9);
+      font-size:13px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+      z-index:9999;
+      max-width:min(540px, 92vw);
+      text-align:center;
+    }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+    .toast.hide{opacity:0; transform:translateX(-50%) translateY(-6px);}
+
+    .result{
+      display:none;
+      text-align:center;
+      padding:14px 10px 6px;
+      margin-top:10px;
+      border-top:1px solid rgba(255,255,255,.10);
+    }
+    .big{font-size:72px; margin-top:6px; animation: pop .6s ease;}
+    @keyframes pop{0%{transform:scale(.6); opacity:0} 100%{transform:scale(1); opacity:1}}
+    .result h2{margin:10px 0 6px; font-size: clamp(22px, 4.3vw, 30px);}
+    .result p{margin:0; color:var(--muted)}
+    .footer{margin-top:14px; text-align:center; color:rgba(255,255,255,.45); font-size:12px; user-select:none;}
+
+    .heart{
+      position:fixed; left:var(--x); bottom:-40px;
+      font-size: 18px; opacity:.92;
+      animation: floatUp var(--dur) linear forwards;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.25));
+      pointer-events:none; user-select:none;
+      z-index: 9998;
+    }
+    @keyframes floatUp{
+      0%{transform: translateY(0) translateX(0) scale(.9); opacity:0}
+      12%{opacity:.95}
+      100%{transform: translateY(-110vh) translateX(var(--drift)) scale(1.28); opacity:0}
+    }
+
+    @media (max-width:360px){
+      button{min-width: 145px}
+      .card{padding:16px}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="toast" id="toast"></div>
+
+  <div class="wrap">
+    <div class="card" id="card">
+      <div class="top">
+        <div class="pill">💘 San Valentín PRO</div>
+        <div class="pill" id="counter">😈 x0</div>
+      </div>
+
+      <h1 class="title">Paula… tengo una pregunta seria 😏</h1>
+      <p class="subtitle">Prometo portarme bien… (bueno, más o menos).</p>
+
+      <div class="hero">
+        <div class="photo">
+          <!-- FOTO VUESTRA:
+               1) Sube una imagen al repo y llámala "foto.jpg"
+               2) Déjala junto al index.html (en la raíz)
+               3) Cambia el src si tu foto se llama distinto -->
+          <img id="ourPhoto" src="foto.jpg" alt="Foto de nosotros" onerror="this.style.display='none';document.getElementById('photoFallback').style.display='flex'">
+          <div id="photoFallback" style="display:none; position:absolute; inset:0; place-items:center; background:rgba(255,255,255,.03); color:rgba(255,255,255,.75); padding:16px; text-align:center;">
+            <div>
+              <div style="font-size:44px;">📷💞</div>
+              <div style="margin-top:10px; font-size:13px;">
+                Sube una foto al repo llamada <b>foto.jpg</b> (junto al <b>index.html</b>) y listo.
+              </div>
+            </div>
+          </div>
+          <div class="overlay">
+            <span class="tag">🫶 “Nosotros”</span>
+            <span class="tag" id="dateTag">🌹 Hoy es nuestro día</span>
+          </div>
+        </div>
+
+        <div class="questionBox">
+          <p class="question" id="question">¿PAULA… quieres ser mi San Valentín? 💝</p>
+          <p class="hint" id="hint">El “NO” existe… pero es tímido.</p>
+
+          <div class="play" id="play">
+            <button class="yes" id="yesBtn">Sí, obvio ❤️</button>
+            <button class="no"  id="noBtn">No 🙃</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="result" id="result">
+        <div class="big">🥰</div>
+        <h2>¡Sabía que eras tú, PAULA! 💘</h2>
+        <p>Ahora toca: abrazo + foto juntos + plan rico. Sin excusas 😌</p>
+        <div class="play" style="margin-top:14px">
+          <button class="yes" id="shareBtn">Compartir por WhatsApp</button>
+        </div>
+      </div>
+
+      <div class="footer">Pista: intenta pulsar “No”… si puedes 😈</div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const card = $("card");
+    const play = $("play");
+    const yesBtn = $("yesBtn");
+    const noBtn = $("noBtn");
+    const counter = $("counter");
+    const toast = $("toast");
+    const result = $("result");
+    const hint = $("hint");
+    const question = $("question");
+
+    let noTries = 0;
+    let lastMove = 0;
+    let swappedOnce = false;
+
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.remove("hide");
+      toast.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => {
+        toast.classList.remove("show");
+        toast.classList.add("hide");
+      }, 1200);
+    }
+
+    function spawnHearts(n = 10){
+      const emojis = ["💗","💖","💕","💘","💞","❤️"];
+      for (let i=0;i<n;i++){
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        const x = Math.random()*100;
+        const dur = 2200 + Math.random()*1800;
+        const drift = (Math.random()*120 - 60).toFixed(0)+"px";
+        h.style.setProperty("--x", x+"vw");
+        h.style.setProperty("--dur", dur+"ms");
+        h.style.setProperty("--drift", drift);
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(), dur+200);
+      }
+    }
+
+    // Mantener el NO dentro de la tarjeta
+    function moveNoButton(extraTroll=false){
+      const now = Date.now();
+      if (now - lastMove < 110) return;
+      lastMove = now;
+
+      noTries++;
+      counter.textContent = `😈 x${noTries}`;
+
+      const cardRect = card.getBoundingClientRect();
+      const btnRect  = noBtn.getBoundingClientRect();
+      const pad = 14;
+
+      const minX = cardRect.left + pad;
+      const maxX = cardRect.right - pad - btnRect.width;
+      const minY = cardRect.top + 220;
+      const maxY = cardRect.bottom - pad - btnRect.height;
+
+      const x = Math.max(minX, Math.min(maxX, minX + Math.random()*(maxX-minX)));
+      const y = Math.max(minY, Math.min(maxY, minY + Math.random()*(maxY-minY)));
+
+      noBtn.style.position = "fixed";
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top  = `${y}px`;
+
+      // Troloe escalable
+      if (noTries === 1) showToast("Uy… casi. Intenta otra vez 😏");
+      if (noTries === 2) showToast("Paula, ese botón no coopera 😈");
+      if (noTries === 3) showToast("Plot twist: el NO se ha asustado.");
+      if (noTries === 4) { showToast("El NO se hace pequeñito…"); noBtn.style.transform = "scale(.82)"; }
+      if (noTries === 5) { showToast("El NO empieza a mentir 😌"); noBtn.textContent = "Sí (pero en rojo) 😇"; }
+      if (noTries === 6 && !swappedOnce){
+        swappedOnce = true;
+        showToast("Ups… ¿se han cambiado los botones? 🤭");
+        // Intercambiar posiciones visuales (solo para liarla)
+        yesBtn.style.filter = "brightness(.95)";
+        yesBtn.textContent = "Sí, obvio ❤️ (la correcta)";
+      }
+      if (noTries >= 7){
+        hint.textContent = "Vale, ya… acepta tu destino romántico 💘";
+        question.textContent = "¿PAULA… dices que SÍ, verdad? 😌";
+      }
+
+      // Animación
+      noBtn.animate([
+        { transform: "rotate(0deg) scale(1)" },
+        { transform: "rotate(-6deg) scale(1.03)" },
+        { transform: "rotate(6deg) scale(1.03)" },
+        { transform: "rotate(0deg) scale(1)" }
+      ], { duration: 220, easing: "ease-out" });
+
+      spawnHearts(extraTroll ? 10 : 3);
+
+      // “Auto-derrota” si insiste demasiado
+      if (noTries >= 9) {
+        showResult();
+      }
+    }
+
+    function showResult(){
+      play.style.display = "none";
+      result.style.display = "block";
+      spawnHearts(18);
+      showToast("Respuesta correcta ✅");
+    }
+
+    yesBtn.addEventListener("click", showResult);
+
+    // El NO huye al hover (PC) y al touch (móvil)
+    noBtn.addEventListener("mouseenter", () => moveNoButton(false));
+    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNoButton(true); }, { passive:false });
+
+    // Si por milagro lo “clican”, huye y encima trollea más
+    noBtn.addEventListener("click", (e) => { e.preventDefault(); moveNoButton(true); });
+
+    // Aparición inicial del NO cerca del botón Sí (para que parezca normal)
+    function placeNoNearYes(){
+      const yesRect = yesBtn.getBoundingClientRect();
+      noBtn.style.position = "fixed";
+      noBtn.style.left = `${yesRect.left + yesRect.width + 10}px`;
+      noBtn.style.top  = `${yesRect.top}px`;
+    }
+
+    // WhatsApp share
+    $("shareBtn").addEventListener("click", async () => {
+      const url = location.href;
+      const text = "PAULA… mira esto 😏💘";
+      try{
+        if (navigator.share) {
+          await navigator.share({ title: "San Valentín 💘", text, url });
+        } else {
+          window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, "_blank");
+        }
+      }catch(e){}
+    });
+
+    // Mini corazones de ambiente
+    setInterval(() => {
+      if (result.style.display === "block") return;
+      spawnHearts(1);
+    }, 1900);
+
+    // Init
+    spawnHearts(6);
+    setTimeout(() => { placeNoNearYes(); }, 120);
+    window.addEventListener("resize", () => { if (result.style.display !== "block") placeNoNearYes(); });
+  </script>
+</body>
+</html>
