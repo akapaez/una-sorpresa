@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Paula 💘 San Valentín</title>
+  <title>JAN 💘</title>
   <meta name="theme-color" content="#ff4d8d" />
   <style>
     :root{
@@ -146,7 +146,7 @@
     button:active{transform: scale(.98)}
     button:focus{outline: 4px solid var(--ring); outline-offset:2px;}
     .yes{background: linear-gradient(180deg, rgba(34,197,94,1), rgba(34,197,94,.78));}
-    .no {background: linear-gradient(180deg, rgba(239,68,68,1), rgba(239,68,68,.78)); position:fixed; left:-9999px; top:-9999px;}
+    .no {background: linear-gradient(180deg, rgba(239,68,68,1), rgba(239,68,68,.78)); position:relative; z-index:1000;}
 
     .toast{
       position:fixed;
@@ -211,36 +211,16 @@
   <div class="wrap">
     <div class="card" id="card">
       <div class="top">
-        <div class="pill">💘 San Valentín PRO</div>
+        <div class="pill">💘 Solo para JAN</div>
         <div class="pill" id="counter">😈 x0</div>
       </div>
 
-      <h1 class="title">Paula… tengo una pregunta seria 😏</h1>
+      <h1 class="title">JAN… tengo una pregunta seria 😏</h1>
       <p class="subtitle">Prometo portarme bien… (bueno, más o menos).</p>
 
       <div class="hero">
-        <div class="photo">
-          <!-- FOTO VUESTRA:
-               1) Sube una imagen al repo y llámala "foto.jpg"
-               2) Déjala junto al index.html (en la raíz)
-               3) Cambia el src si tu foto se llama distinto -->
-          <img id="ourPhoto" src="foto.jpg" alt="Foto de nosotros" onerror="this.style.display='none';document.getElementById('photoFallback').style.display='flex'">
-          <div id="photoFallback" style="display:none; position:absolute; inset:0; place-items:center; background:rgba(255,255,255,.03); color:rgba(255,255,255,.75); padding:16px; text-align:center;">
-            <div>
-              <div style="font-size:44px;">📷💞</div>
-              <div style="margin-top:10px; font-size:13px;">
-                Sube una foto al repo llamada <b>foto.jpg</b> (junto al <b>index.html</b>) y listo.
-              </div>
-            </div>
-          </div>
-          <div class="overlay">
-            <span class="tag">🫶 “Nosotros”</span>
-            <span class="tag" id="dateTag">🌹 Hoy es nuestro día</span>
-          </div>
-        </div>
-
         <div class="questionBox">
-          <p class="question" id="question">¿PAULA… quieres ser mi San Valentín? 💝</p>
+          <p class="question" id="question">Jan... ¿Me quieres? 💝</p>
           <p class="hint" id="hint">El “NO” existe… pero es tímido.</p>
 
           <div class="play" id="play">
@@ -252,7 +232,7 @@
 
       <div class="result" id="result">
         <div class="big">🥰</div>
-        <h2>¡Sabía que eras tú, PAULA! 💘</h2>
+        <h2>¡Sabía que eras tú, JAN! 💘</h2>
         <p>Ahora toca: abrazo + foto juntos + plan rico. Sin excusas 😌</p>
         <div class="play" style="margin-top:14px">
           <button class="yes" id="shareBtn">Compartir por WhatsApp</button>
@@ -308,67 +288,43 @@
       }
     }
 
-    // Mantener el NO dentro de la tarjeta
-    function moveNoButton(extraTroll=false){
-      const now = Date.now();
-      if (now - lastMove < 110) return;
+    // El botón NO escapa por toda la ventana y nunca activa el resultado.
+    function moveNoButton(extraTroll = false, pointerX = null, pointerY = null) {
+      const now = performance.now();
+      if (now - lastMove < 95) return;
       lastMove = now;
-
       noTries++;
       counter.textContent = `😈 x${noTries}`;
 
-      const cardRect = card.getBoundingClientRect();
-      const btnRect  = noBtn.getBoundingClientRect();
-      const pad = 14;
+      const rect = noBtn.getBoundingClientRect();
+      const margin = 12;
+      const maxX = Math.max(margin, window.innerWidth - rect.width - margin);
+      const maxY = Math.max(margin, window.innerHeight - rect.height - margin);
+      let x = margin, y = margin;
 
-      const minX = cardRect.left + pad;
-      const maxX = cardRect.right - pad - btnRect.width;
-      const minY = cardRect.top + 220;
-      const maxY = cardRect.bottom - pad - btnRect.height;
-
-      const x = Math.max(minX, Math.min(maxX, minX + Math.random()*(maxX-minX)));
-      const y = Math.max(minY, Math.min(maxY, minY + Math.random()*(maxY-minY)));
-
+      // Se elige una posición alejada del puntero, siempre dentro de pantalla.
+      for (let i = 0; i < 50; i++) {
+        const candidateX = margin + Math.random() * Math.max(0, maxX - margin);
+        const candidateY = margin + Math.random() * Math.max(0, maxY - margin);
+        x = candidateX;
+        y = candidateY;
+        if (pointerX === null || Math.hypot(x + rect.width / 2 - pointerX, y + rect.height / 2 - pointerY) > 190) break;
+      }
       noBtn.style.position = "fixed";
       noBtn.style.left = `${x}px`;
-      noBtn.style.top  = `${y}px`;
+      noBtn.style.top = `${y}px`;
 
-      // Troloe escalable
       if (noTries === 1) showToast("Uy… casi. Intenta otra vez 😏");
-      if (noTries === 2) showToast("Paula, ese botón no coopera 😈");
-      if (noTries === 3) showToast("Plot twist: el NO se ha asustado.");
-      if (noTries === 4) { showToast("El NO se hace pequeñito…"); noBtn.style.transform = "scale(.82)"; }
-      if (noTries === 5) { showToast("El NO empieza a mentir 😌"); noBtn.textContent = "Sí (pero en rojo) 😇"; }
-      if (noTries === 6 && !swappedOnce){
-        swappedOnce = true;
-        showToast("Ups… ¿se han cambiado los botones? 🤭");
-        // Intercambiar posiciones visuales (solo para liarla)
-        yesBtn.style.filter = "brightness(.95)";
-        yesBtn.textContent = "Sí, obvio ❤️ (la correcta)";
-      }
-      if (noTries >= 7){
-        hint.textContent = "Vale, ya… acepta tu destino romántico 💘";
-        question.textContent = "¿PAULA… dices que SÍ, verdad? 😌";
-      }
-
-      // Animación
-      noBtn.animate([
-        { transform: "rotate(0deg) scale(1)" },
-        { transform: "rotate(-6deg) scale(1.03)" },
-        { transform: "rotate(6deg) scale(1.03)" },
-        { transform: "rotate(0deg) scale(1)" }
-      ], { duration: 220, easing: "ease-out" });
-
-      spawnHearts(extraTroll ? 10 : 3);
-
-      // “Auto-derrota” si insiste demasiado
-      if (noTries >= 9) {
-        showResult();
-      }
+      if (noTries === 2) showToast("JAN, ese botón no coopera 😈");
+      if (noTries === 4) showToast("¡Es imposible pillarlo! 💘");
+      if (noTries === 7) showToast("Creo que el botón tiene otros planes 🤭");
+      if (noTries >= 8) hint.textContent = "El NO no se deja tocar… 💞";
+      spawnHearts(extraTroll ? 8 : 3);
     }
 
-    function showResult(){
+    function showResult() {
       play.style.display = "none";
+      noBtn.style.display = "none";
       result.style.display = "block";
       spawnHearts(18);
       showToast("Respuesta correcta ✅");
@@ -376,28 +332,37 @@
 
     yesBtn.addEventListener("click", showResult);
 
-    // El NO huye al hover (PC) y al touch (móvil)
-    noBtn.addEventListener("mouseenter", () => moveNoButton(false));
-    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNoButton(true); }, { passive:false });
+    // PC: esquiva incluso antes de que el ratón llegue al botón.
+    document.addEventListener("pointermove", (e) => {
+      if (e.pointerType !== "mouse" || result.style.display === "block") return;
+      const r = noBtn.getBoundingClientRect();
+      const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
+      const dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+      if (Math.hypot(dx, dy) < 85) moveNoButton(false, e.clientX, e.clientY);
+    });
 
-    // Si por milagro lo “clican”, huye y encima trollea más
-    noBtn.addEventListener("click", (e) => { e.preventDefault(); moveNoButton(true); });
-
-    // Aparición inicial del NO cerca del botón Sí (para que parezca normal)
-    function placeNoNearYes(){
-      const yesRect = yesBtn.getBoundingClientRect();
-      noBtn.style.position = "fixed";
-      noBtn.style.left = `${yesRect.left + yesRect.width + 10}px`;
-      noBtn.style.top  = `${yesRect.top}px`;
-    }
+    // Móvil, teclado y clic: ninguna interacción puede seleccionar NO.
+    noBtn.addEventListener("pointerdown", e => {
+      e.preventDefault();
+      moveNoButton(true, e.clientX, e.clientY);
+    });
+    noBtn.addEventListener("click", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      moveNoButton(true);
+    });
+    noBtn.addEventListener("focus", () => {
+      noBtn.blur();
+      moveNoButton(false);
+    });
 
     // WhatsApp share
     $("shareBtn").addEventListener("click", async () => {
       const url = location.href;
-      const text = "PAULA… mira esto 😏💘";
+      const text = "JAN… mira esto 😏💘";
       try{
         if (navigator.share) {
-          await navigator.share({ title: "San Valentín 💘", text, url });
+          await navigator.share({ title: "Una pregunta para JAN 💘", text, url });
         } else {
           window.open(`https://wa.me/?text=${encodeURIComponent(text + " " + url)}`, "_blank");
         }
@@ -412,8 +377,12 @@
 
     // Init
     spawnHearts(6);
-    setTimeout(() => { placeNoNearYes(); }, 120);
-    window.addEventListener("resize", () => { if (result.style.display !== "block") placeNoNearYes(); });
+    window.addEventListener("resize", () => {
+      if (result.style.display === "block" || noBtn.style.position !== "fixed") return;
+      const r = noBtn.getBoundingClientRect();
+      noBtn.style.left = `${Math.max(12, Math.min(r.left, window.innerWidth - r.width - 12))}px`;
+      noBtn.style.top = `${Math.max(12, Math.min(r.top, window.innerHeight - r.height - 12))}px`;
+    });
   </script>
 </body>
 </html>
