@@ -8,6 +8,7 @@ import { DESKTOP, MOBILE, ramp, sceneAt } from '@/three/story'
 import type { HeroManual } from '@/three/HeroScene'
 import type { FinishId } from '@/three/windowSpec'
 import { FINISHES } from '@/content/solutions'
+import { asset } from '@/lib/asset'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -39,7 +40,7 @@ function Poster({ mobile }: { mobile: boolean }) {
     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_62%_46%,#2a3033_0%,#121415_48%,#0d0e0f_75%)]">
       {ok && (
         <img
-          src={mobile ? '/renders/hero-mobile.jpg' : '/renders/hero-desktop.jpg'}
+          src={asset(mobile ? '/renders/hero-mobile.jpg' : '/renders/hero-desktop.jpg')}
           alt=""
           className="h-full w-full object-cover"
           onError={() => setOk(false)}

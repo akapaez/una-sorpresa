@@ -7,6 +7,7 @@ import { Button } from '@/ui/Button'
 import { Dialog, toast } from '@/ui/Dialog'
 import { PageHeader, Badge, Notice, TextInput, SelectInput, EmptyState, DemoTag } from '@/ui/primitives'
 import { fmtDate, fmtDateTime, Section } from '../shared'
+import { asset } from '@/lib/asset'
 
 const STATUS: Record<EditorialStatus, [string, 'neutral' | 'warn' | 'info' | 'green']> = {
   incorporado: ['Incorporado', 'neutral'], borrador: ['Borrador', 'warn'], revision: ['En revisión', 'info'], aprobado: ['Aprobado', 'green'], publicado: ['Publicado', 'green'],
@@ -233,7 +234,7 @@ export function Imports() {
   }
   const useSample = async () => {
     try {
-      const r = await fetch('/samples/importacion-pedidos-EJEMPLO.csv')
+      const r = await fetch(asset('/samples/importacion-pedidos-EJEMPLO.csv'))
       load('importacion-pedidos-EJEMPLO.csv', await r.text(), true)
     } catch { toast('No se pudo cargar la plantilla de ejemplo', undefined, 'warn') }
   }
@@ -305,7 +306,7 @@ export function Imports() {
             <input ref={localRef} type="file" accept=".csv,text/csv" className="sr-only" tabIndex={-1} aria-hidden onChange={async (e) => { const f = e.target.files?.[0]; if (f) load(f.name, await f.text(), false); e.target.value = '' }} />
             <div className="mt-4 flex flex-wrap gap-2">
               <Button size="sm" variant="outline" onClick={() => localRef.current?.click()}>Elegir archivo</Button>
-              <Button size="sm" variant="ghost" href="/samples/importacion-pedidos-EJEMPLO.csv" download="importacion-pedidos-EJEMPLO.csv" icon={<Download size={14} aria-hidden />}>Descargar plantilla</Button>
+              <Button size="sm" variant="ghost" href={asset('/samples/importacion-pedidos-EJEMPLO.csv')} download="importacion-pedidos-EJEMPLO.csv" icon={<Download size={14} aria-hidden />}>Descargar plantilla</Button>
             </div>
           </div>
         </div>

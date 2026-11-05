@@ -1,4 +1,5 @@
 import { useId, useState } from 'react'
+import { asset } from '@/lib/asset'
 
 /** Comparador antes/después con control accesible (range) y arrastre. */
 export function CompareSlider({ a, b, labelA, labelB, alt, className = '' }: { a: string; b: string; labelA: string; labelB: string; alt: string; className?: string }) {
@@ -6,9 +7,9 @@ export function CompareSlider({ a, b, labelA, labelB, alt, className = '' }: { a
   const id = useId()
   return (
     <div className={`relative select-none overflow-hidden ${className}`}>
-      <img src={b} alt={`${alt} — ${labelB}`} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+      <img src={asset(b)} alt={`${alt} — ${labelB}`} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
       <div className="absolute inset-0 overflow-hidden" style={{ clipPath: `inset(0 ${100 - v}% 0 0)` }}>
-        <img src={a} alt={`${alt} — ${labelA}`} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+        <img src={asset(a)} alt={`${alt} — ${labelA}`} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
       </div>
       <div className="pointer-events-none absolute inset-y-0" style={{ left: `${v}%` }} aria-hidden>
         <div className="absolute inset-y-0 -ml-px w-0.5 bg-white/85" />

@@ -34,6 +34,9 @@ function Root() {
   )
 }
 
+// basename: raíz en local; subcarpeta cuando se publica (BASE_PATH)
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
+
 const router = createBrowserRouter([
   { path: '/_render', element: S(<RenderPoster />) },
   {
@@ -96,7 +99,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-])
+], { basename })
 
 export function App() {
   return <RouterProvider router={router} />
