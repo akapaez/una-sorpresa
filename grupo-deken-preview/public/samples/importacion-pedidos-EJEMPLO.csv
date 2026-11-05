@@ -1,0 +1,9 @@
+# PLANTILLA DE EJEMPLO creada para la previsualización. NO es el formato real de exportación de PrefSuite.
+Referencia pedido;Proyecto;Fase;Estado;Fecha prevista;Fecha confirmada;Observaciones
+PED-2026-031;PRJ-0128;Fase 2 · bloque B;LISTO;18/11/2026;;Material preparado. Día de entrega por confirmar
+PED-2026-027;PRJ-0128;Fase 1 · bloque A;ENTREGADO;2026-10-10;2026-10-14;
+PED-2026-036;PRJ-0128;Fase 3 · bloque C;DOC;15/12/2026;;Pendiente de medidas definitivas
+PED-2026-036;PRJ-0128;Fase 3 · bloque C;DOC;15/12/2026;;Fila duplicada en el archivo
+;PRJ-0142;;FAB;;;Fila sin referencia de pedido
+PED-2026-040;PRJ-0999;Única;FAB;2026-12-01;;Proyecto inexistente
+PED-2026-041;PRJ-0142;Fase 1;EN CURSO;32/13/2026;;Estado y fecha no reconocidos

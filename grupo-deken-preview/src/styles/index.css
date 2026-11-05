@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Tokens Deken · Previsualización
+   Marca: verde #76B82A (único acento) y gris #383E42 (fuente: skill
+   "estilo-de-marca"). Neutros oscuros derivados del gris (204°, 8,2%).
+   Neutros claros: papel cálido para lectura y herramientas.
+   Regla: nunca texto blanco sobre verde (2,42:1). Sobre verde → #0D0E0F.
+   ------------------------------------------------------------------ */
+@theme {
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Marca */
+  --color-green: #76b82a;
+  --color-green-ink: #457512;   /* texto verde sobre claro · 5,06:1 */
+  --color-green-deep: #3f6b10;  /* hover / foco sobre claro */
+  --color-green-soft: #eef5e4;  /* fondo de selección muy suave */
+  --color-brand-grey: #383e42;
+
+  /* Base clara (papel cálido) */
+  --color-paper: #f6f5f1;
+  --color-paper-2: #efede7;
+  --color-surface: #ffffff;
+  --color-line: #dedbd3;
+  --color-line-2: #cbc7bd;
+  --color-ink: #15181a;     /* 16,3:1 sobre papel */
+  --color-ink-2: #4a5257;   /* 7,3:1 */
+  --color-ink-3: #646d73;   /* 4,8:1 */
+
+  /* Escenas oscuras (grafito derivado del gris Deken) */
+  --color-night: #0d0e0f;
+  --color-night-2: #16191a;
+  --color-night-3: #1f2325;
+  --color-night-line: #383e42;
+  --color-fog: #ffffff;
+  --color-fog-2: #a1aaaf;   /* 7,5:1 sobre night-2 */
+  --color-fog-3: #7b878f;   /* 4,8:1 sobre night-2 */
+
+  /* Estados (sin segundo acento de marca: tonos funcionales apagados) */
+  --color-warn: #8a5a00;
+  --color-warn-soft: #fbf1dc;
+  --color-danger: #a1331f;
+  --color-danger-soft: #f9e6e1;
+  --color-info: #2f5d7c;
+  --color-info-soft: #e5eef4;
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  --shadow-1: 0 1px 2px rgb(21 24 26 / 0.06), 0 1px 1px rgb(21 24 26 / 0.04);
+  --shadow-2: 0 6px 24px -8px rgb(21 24 26 / 0.18), 0 2px 6px rgb(21 24 26 / 0.06);
+  --shadow-3: 0 24px 64px -24px rgb(13 14 15 / 0.45);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --animate-arrive: arrive 640ms var(--ease-out) both;
+  --animate-fade: fade 240ms var(--ease-out) both;
+
+  @keyframes arrive {
+    from { opacity: 0; transform: translateY(14px); filter: blur(6px); }
+    to   { opacity: 1; transform: none; filter: blur(0); }
+  }
+  @keyframes fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+}
+
+/* Escala de movimiento: control 140ms · interfaz 240ms · escena 640-1200ms */
+:root {
+  --dur-control: 140ms;
+  --dur-ui: 240ms;
+  --dur-scene: 900ms;
+  --z-header: 40;
+  --z-drawer: 60;
+  --z-dialog: 80;
+  --z-toast: 90;
+  --z-demo: 95;
+  color-scheme: light;
+}
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: auto; }
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-weight: 450;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Tipografía de marca */
+.display {
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+.h-section {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.tnum { font-variant-numeric: tabular-nums; }
+.lede { text-wrap: pretty; }
+
+/* Foco visible coherente */
+:focus-visible {
+  outline: 2px solid var(--color-green-deep);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.dark-scene :focus-visible { outline-color: var(--color-green); }
+
+/* Superficies oscuras */
+.dark-scene {
+  background: var(--color-night);
+  color: var(--color-fog);
+  color-scheme: dark;
+}
+
+/* Grano muy sutil para escenas oscuras (sin imágenes externas) */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
+}
+
+/* Scrollbars discretas en paneles */
+.thin-scroll { scrollbar-width: thin; scrollbar-color: var(--color-line-2) transparent; }
+
+/* Inputs base */
+.field {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--color-line-2);
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.8rem;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--color-ink);
+  transition: border-color var(--dur-control), box-shadow var(--dur-control);
+}
+.field:hover { border-color: var(--color-ink-3); }
+.field:focus { outline: none; border-color: var(--color-green-deep); box-shadow: 0 0 0 3px rgb(118 184 42 / 0.25); }
+.field[aria-invalid="true"] { border-color: var(--color-danger); }
+textarea.field { min-height: 110px; resize: vertical; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* Etiquetas de piezas en el visor 3D */
+.part-label {
+  position: absolute; left: 0; top: 0;
+  display: flex; align-items: center; gap: 0; white-space: nowrap;
+  transform: translate(-5px, -50%);
+  transition: opacity 200ms;
+  font-family: var(--font-mono);
+}
+.part-label__dot { width: 9px; height: 9px; border-radius: 99px; background: var(--color-green); box-shadow: 0 0 0 3px rgb(13 14 15 / 0.55); flex: none; }
+.part-label__line { width: 28px; height: 1px; background: rgb(255 255 255 / 0.55); }
+.part-label__text {
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;
+  color: #fff; background: rgb(13 14 15 / 0.82); border: 1px solid #383e42;
+  padding: 5px 9px; border-radius: 4px; backdrop-filter: blur(4px);
+}
+.part-label--left { flex-direction: row-reverse; transform: translate(calc(-100% + 5px), -50%); }
+
+/* Glifos de apertura (catálogo y portada): se animan al pasar o enfocar la tarjeta */
+.glyph-sash { transform-box: fill-box; transition: transform 900ms var(--ease-out); }
+.glyph-sash.turn-l { transform-origin: left center; }
+.glyph-sash.turn-r { transform-origin: right center; }
+.glyph-sash.tilt { transform-origin: center bottom; }
+.glyph-host:hover .glyph-sash.turn-l, .glyph-host:focus-visible .glyph-sash.turn-l, .glyph-host[data-play="true"] .glyph-sash.turn-l { transform: perspective(200px) rotateY(-52deg); }
+.glyph-host:hover .glyph-sash.turn-r, .glyph-host:focus-visible .glyph-sash.turn-r, .glyph-host[data-play="true"] .glyph-sash.turn-r { transform: perspective(200px) rotateY(52deg); }
+.glyph-host:hover .glyph-sash.tilt, .glyph-host:focus-visible .glyph-sash.tilt, .glyph-host[data-play="true"] .glyph-sash.tilt { transform: perspective(200px) rotateX(24deg); }
+.glyph-host:hover .glyph-sash.slide, .glyph-host:focus-visible .glyph-sash.slide, .glyph-host[data-play="true"] .glyph-sash.slide { transform: translateX(-42%); }
+.glyph-host:hover .glyph-sash.lift, .glyph-host:focus-visible .glyph-sash.lift, .glyph-host[data-play="true"] .glyph-sash.lift { transform: translate(-40%, -3%); }
+
+/* Ilustraciones: ondas y flujos (desactivados con movimiento reducido) */
+@keyframes wave-pulse { 0% { transform: scale(0.92); opacity: 0.25; } 50% { opacity: 1; } 100% { transform: scale(1.06); opacity: 0.25; } }
+.wave { transform-box: view-box; transform-origin: 70px 190px; animation: wave-pulse 2.6s var(--ease-inout) infinite; }
+@keyframes dash-flow { to { stroke-dashoffset: -24; } }
+.flow path { animation: dash-flow 1.4s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .wave, .flow path { animation: none !important; } }
+
+/* Evita que los hijos de rejilla se ensanchen con contenido sin corte (pantallas estrechas) */
+.grid > * { min-width: 0; }
+/* Los selectores de archivo ocultos no deben ensanchar el documento */
+input[type="file"].sr-only { left: 0; top: 0; }
+/* Los contenedores con scroll horizontal contienen también a sus hijos absolutos (p. ej. textos sr-only) */
+.overflow-x-auto { position: relative; }
