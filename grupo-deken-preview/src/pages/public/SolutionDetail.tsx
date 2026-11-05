@@ -1,10 +1,11 @@
 import { lazy, Suspense } from 'react'
 import { Link, useParams } from 'react-router'
 import { ArrowLeft, ArrowRight, Compass, Box, FileQuestion, LockKeyhole } from 'lucide-react'
-import { FINISHES, SERIES, SOLUTIONS, typologyBySlug } from '@/content/solutions'
+import { SOLUTIONS, typologyBySlug } from '@/content/solutions'
+import { SERIES_INFO, FINISH_RANGE } from '@/content/series'
 import { useDemo } from '@/demo/store'
 import { Button } from '@/ui/Button'
-import { Eyebrow, Badge, Notice } from '@/ui/primitives'
+import { Eyebrow, Notice } from '@/ui/primitives'
 import { Poster } from '@/ui/Poster'
 import { OpeningGlyph } from '@/ui/OpeningGlyph'
 import NotFound from './NotFound'
@@ -19,6 +20,7 @@ export default function SolutionDetail() {
   if (!s) return <NotFound />
   const approved = role === 'aprobado'
   const others = SOLUTIONS.filter((x) => x.slug !== s.slug).slice(0, 3)
+  const seriesFor = SERIES_INFO.filter((x) => x.typologies.includes(s.slug))
 
   return (
     <div className="bg-paper">
@@ -67,31 +69,34 @@ export default function SolutionDetail() {
           </div>
 
           <div className="mt-8">
-            <h2 className="text-[1.05rem] font-bold">Acabados de muestra</h2>
-            <ul className="mt-3 flex flex-wrap gap-3">
-              {FINISHES.map((f) => (
-                <li key={f.id} className="flex items-center gap-2.5 rounded-full border border-line bg-surface py-1.5 pl-1.5 pr-4 text-[0.86rem]">
+            <h2 className="text-[1.05rem] font-bold">Acabados</h2>
+            <ul className="mt-3 flex flex-wrap gap-2.5">
+              {FINISH_RANGE.map((f) => (
+                <li key={f.name} className="flex items-center gap-2.5 rounded-full border border-line bg-surface py-1.5 pl-1.5 pr-4 text-[0.86rem]">
                   <span className="h-7 w-7 rounded-full border border-line-2" style={{ background: f.swatch }} aria-hidden />
-                  <span><strong>{f.name}</strong> <span className="text-ink-3">· {f.note}</span></span>
+                  <span><strong>{f.name}</strong>{f.ref && <span className="text-ink-3"> · {f.ref}</span>}</span>
                 </li>
               ))}
             </ul>
+            <p className="mt-2 text-[0.82rem] text-ink-3">Gama de la web actual de Deken. Colores de pantalla orientativos; para decidir, muestra física.</p>
           </div>
 
           <div className="mt-8">
-            <h2 className="text-[1.05rem] font-bold">Información técnica</h2>
-            <div className="mt-3 overflow-hidden rounded-[12px] border border-line bg-surface">
-              <table className="w-full text-left text-[0.88rem]">
-                <caption className="sr-only">Estado de la documentación técnica por serie</caption>
-                <thead className="bg-paper-2 text-ink-2"><tr><th className="px-4 py-2.5 font-semibold">Serie de perfil</th><th className="px-4 py-2.5 font-semibold">Ficha técnica</th></tr></thead>
-                <tbody>
-                  {SERIES.slice(0, 4).map((se) => (
-                    <tr key={se.slug} className="border-t border-line"><td className="px-4 py-2.5 font-semibold">{se.name}</td><td className="px-4 py-2.5"><Badge tone="warn">Pendiente de documentación</Badge></td></tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="mt-2 text-[0.82rem] text-ink-3">La compatibilidad de cada serie con esta tipología se confirmará con la documentación de Deken. No se muestran cifras sin fuente.</p>
+            <h2 className="text-[1.05rem] font-bold">Series Schüco para esta tipología</h2>
+            {seriesFor.length === 0 ? <p className="mt-2 text-[0.88rem] text-ink-3">Pendiente de confirmar con Deken.</p> : (
+              <ul className="mt-3 space-y-2">
+                {seriesFor.map((se) => (
+                  <li key={se.slug}>
+                    <Link to={`/series/${se.slug}`} className="group flex flex-wrap items-center gap-x-5 gap-y-1 rounded-[12px] border border-line bg-surface px-4 py-3 hover:border-ink-3">
+                      <span className="font-extrabold">{se.name}</span>
+                      <span className="text-[0.84rem] text-ink-2">{se.hero.slice(0, 3).map((h) => `${h.value}${h.unit ? ' ' + h.unit : ''} ${h.label.toLowerCase()}`).join(' · ')}</span>
+                      <ArrowRight size={16} className="ml-auto text-ink-3 group-hover:text-ink" aria-hidden />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="mt-2 text-[0.82rem] text-ink-3">Valores del fabricante; cada ficha indica documento y página. La serie definitiva se propone en la revisión técnica.</p>
           </div>
 
           <div className="mt-10 rounded-[16px] bg-night-2 p-6 text-white" data-theme="dark">

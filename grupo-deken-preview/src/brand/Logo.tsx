@@ -1,23 +1,30 @@
+import horizontal from './svg/horizontal.svg?raw'
+import monograma from './svg/monograma.svg?raw'
+
 /**
- * LOGOTIPO PROVISIONAL — composición tipográfica.
- * No se han aportado los archivos de logotipo. Para sustituirlo, reemplaza el contenido de
- * este componente por el SVG/PNG oficial (p. ej. GRUPO-DEKEN-HORIZONTAL en blanco sobre oscuro).
- * Nota de la skill de marca: en la familia horizontal, los PNG «BLANCO» y «GRIS» están intercambiados.
+ * LOGOTIPOS OFICIALES (kit web de Grupo Deken, Google Drive · Recursos-Deken/grupo-deken-kit-web/logos).
+ * Se usan los SVG vectoriales y se colorean con currentColor según el fondo, como indica el manual:
+ *  · sobre blanco/gris claro → verde Deken;  · sobre antracita o negro → blanco;  · una tinta → antracita.
+ * Se evita el PNG horizontal blanco del kit: el manual advierte que tiene rellenos los huecos de DEKEN.
+ * Tamaños mínimos (manual): horizontal 140 px de ancho, monograma 24 px.
  */
-export function Logo({ dark = false, compact = false, className = '' }: { dark?: boolean; compact?: boolean; className?: string }) {
-  return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`} aria-label="Grupo Deken">
-      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden className="shrink-0">
-        <rect x="3" y="3" width="26" height="26" rx="2" fill="none" stroke="#76B82A" strokeWidth="3" />
-        <line x1="16" y1="3" x2="16" y2="29" stroke="#76B82A" strokeWidth="2.4" />
-        <rect x="19.5" y="13" width="2.6" height="6" rx="1" fill={dark ? '#ffffff' : '#383E42'} />
-      </svg>
-      {!compact && (
-        <span className={`flex flex-col leading-none ${dark ? 'text-white' : 'text-ink'}`} aria-hidden>
-          <span className="text-[0.6rem] font-semibold tracking-[0.42em]">GRUPO</span>
-          <span className="text-[1.12rem] font-extrabold tracking-[0.08em]">DEKEN</span>
-        </span>
-      )}
-    </span>
-  )
+const paint = (svg: string) => svg.replace(/fill="#76B82A"/gi, 'fill="currentColor"').replace('<svg ', '<svg aria-hidden="true" focusable="false" ')
+
+const H = paint(horizontal)
+const M = paint(monograma)
+
+type Tone = 'verde' | 'blanco' | 'antracita'
+const TONE: Record<Tone, string> = { verde: 'text-green', blanco: 'text-white', antracita: 'text-[#383E42]' }
+
+export function Logo({ dark = false, compact = false, tone, className = '', width }: { dark?: boolean; compact?: boolean; tone?: Tone; className?: string; width?: number }) {
+  const t = tone ?? (dark ? 'blanco' : 'verde')
+  if (compact) {
+    return <span role="img" aria-label="Grupo Deken" className={`inline-block ${TONE[t]} [&>svg]:h-full [&>svg]:w-auto ${className}`} style={{ height: width ? width * 0.767 : 24 }} dangerouslySetInnerHTML={{ __html: M }} />
+  }
+  return <span role="img" aria-label="Grupo Deken" className={`inline-block align-middle ${TONE[t]} [&>svg]:h-auto [&>svg]:w-full ${className}`} style={{ width: width ?? 150 }} dangerouslySetInnerHTML={{ __html: H }} />
+}
+
+/** Monograma GD para avatares y sellos (mínimo 24 px). */
+export function Monogram({ tone = 'verde', size = 32, className = '' }: { tone?: Tone; size?: number; className?: string }) {
+  return <Logo compact tone={tone} width={size} className={className} />
 }

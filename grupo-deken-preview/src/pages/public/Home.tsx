@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ChevronRight, Box, Columns3, Compass, Library, FolderKanban, Truck } from 'lucide-react'
 import { HomeHero, SUPPLY } from './HomeHero'
 import { SOLUTIONS } from '@/content/solutions'
+import { SERIES_INFO, DOCS } from '@/content/series'
 import { MEDIA } from '@/content/media'
 import { Button } from '@/ui/Button'
 import { OpeningGlyph } from '@/ui/OpeningGlyph'
@@ -27,6 +28,7 @@ export default function Home() {
       <FullBleed />
       <Typologies />
       <Finishes />
+      <Systems />
       <Comfort />
       <Process />
       <Tools />
@@ -201,15 +203,58 @@ function Finishes() {
 }
 
 /* 5 · Confort ------------------------------------------------------------------------------------ */
+function Systems() {
+  return (
+    <section className="bg-paper py-28 md:py-40" data-theme="light">
+      <div className="mx-auto max-w-[1200px] px-5 text-center">
+        <h2 className={H2}>Cinco sistemas.<br /><span className="text-ink-3">Una fábrica.</span></h2>
+        <p className={`${LEAD} mt-6 text-ink-2`}>Perfiles Schüco de PVC fabricados a medida en Sevilla. Cada cifra sale de la documentación técnica del fabricante.</p>
+      </div>
+      <ul className="thin-scroll mt-16 flex snap-x snap-mandatory gap-px overflow-x-auto px-5 lg:mx-auto lg:grid lg:max-w-[1200px] lg:grid-cols-5 lg:overflow-visible lg:px-5">
+        {SERIES_INFO.map((s) => {
+          const depth = s.hero[0]
+          const rest = s.hero.slice(1, 4)
+          return (
+            <li key={s.slug} className="w-[70vw] shrink-0 snap-center border-line px-5 text-center sm:w-[40vw] lg:w-auto lg:border-l lg:first:border-l-0">
+              <Link to={`/series/${s.slug}`} className="group block">
+                <p className="text-[1.25rem] font-extrabold tracking-tight">{s.name.replace('Schüco ', '')}</p>
+                <p className="mt-1 min-h-[3.2em] text-[0.86rem] leading-[1.6em] text-ink-2">{s.tagline}</p>
+                <p className="mt-8 text-[2.8rem] font-extrabold leading-none tracking-[-0.04em] text-ink"><span className="tnum">{depth.value.split(' / ')[0]}</span><span className="ml-1 text-[0.36em] font-bold tracking-normal text-ink-2">{depth.unit}</span></p>
+                <p className="mt-2 text-[0.78rem] text-ink-3">{depth.label}</p>
+                <dl className="mt-8 space-y-5">
+                  {rest.map((h) => (
+                    <div key={h.label} className="flex flex-col-reverse">
+                      <dt className="mt-1 text-[0.76rem] text-ink-3">{h.label}</dt>
+                      <dd className="text-[1.25rem] font-bold leading-none tracking-tight"><span className="tnum">{h.value}</span>{h.unit && <span className="ml-1 text-[0.6em] text-ink-2">{h.unit}</span>}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <span className="mt-8 inline-flex items-center gap-1 text-[0.9rem] font-semibold text-green-ink group-hover:underline">Ver la serie <ChevronRight size={16} aria-hidden /></span>
+              </Link>
+            </li>
+          )
+        })}
+      </ul>
+      <p className="mx-auto mt-12 max-w-[46rem] px-5 text-center text-[0.76rem] text-ink-3">Valores del fabricante para la configuración ensayada ({Object.values(DOCS).filter((d) => d.kind !== 'web Deken').length} folletos y catálogos Schüco; las elevadoras, según la web actual de Deken). Uw depende del vidrio y de la medida de cada ventana.</p>
+      <div className="mt-8 text-center"><MoreLink to="/series">Comparar las series</MoreLink></div>
+    </section>
+  )
+}
+
 function Comfort() {
   return (
     <section className="bg-black px-5 py-28 text-center text-white md:py-40" data-theme="dark">
       <h2 className={H2}>Confort,<br /><span className="text-fog-3">de dentro afuera.</span></h2>
-      <p className={`${LEAD} mt-6 text-fog-2`}>Perfil, vidrio, juntas y herraje trabajan juntos. Lo explicamos de forma visual; las cifras, en la documentación técnica de cada configuración.</p>
+      <p className={`${LEAD} mt-6 text-fog-2`}>Perfil, vidrio, juntas y herraje trabajan juntos. Con vidrio acústico, los folletos Schüco recogen hasta:</p>
+      <dl className="mx-auto mt-12 grid max-w-[900px] grid-cols-3 gap-4">
+        {[['49', 'CT 70 Classic'], ['48', 'FocusIng'], ['47', 'LivIng Classic']].map(([v, n]) => (
+          <div key={n} className="flex flex-col-reverse"><dt className="mt-2 text-[0.84rem] text-fog-3">{n}</dt><dd className="text-[2.6rem] font-extrabold leading-none tracking-[-0.04em] md:text-[4.4rem]"><span className="tnum">{v}</span><span className="ml-1 text-[0.36em] font-bold tracking-normal text-fog-2">dB</span></dd></div>
+        ))}
+      </dl>
       <div className="mx-auto mt-14 max-w-[900px] overflow-hidden rounded-[28px] border border-white/10">
         <AcousticIllustration closed={false} animated />
       </div>
-      <p className="label mt-4 !text-[0.58rem] text-white/45">Explicación ilustrativa · no representa un ensayo ni una cifra de aislamiento</p>
+      <p className="label mt-4 !text-[0.58rem] text-white/45">Ilustración explicativa · cifras: folletos Schüco CT 70 Classic (p. 7), FocusIng (p. 15) y LivIng Classic (p. 5)</p>
       <div className="mt-8"><MoreLink to="/profesional/demostraciones" dark>Ver las demostraciones</MoreLink></div>
     </section>
   )

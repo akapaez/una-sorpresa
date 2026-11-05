@@ -163,6 +163,11 @@ export async function downloadLibraryDoc(d: LibraryDoc) {
     for (const b of s.body) { y = para(doc, (s.body.length > 2 ? '·  ' : '') + b, 16, y, W - 32) + 2.5 }
     y += 3
   }
-  footer(doc, `Documento creado para la demo (${d.manufacturer}). No procede de catálogos oficiales.`)
-  save(doc, `${d.slug}_DEMO.pdf`)
+  if (d.origin === 'schueco') {
+    footer(doc, `Resumen en español de documentación ${d.manufacturer}${d.sourceFile ? ` (${d.sourceFile.split('/').pop()})` : ''}. Valores del fabricante; consultar el original.`)
+    save(doc, `${d.slug}_resumen.pdf`)
+  } else {
+    footer(doc, `Documento creado para la demo (${d.manufacturer}). No procede de catálogos oficiales.`)
+    save(doc, `${d.slug}_DEMO.pdf`)
+  }
 }

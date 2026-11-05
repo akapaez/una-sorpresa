@@ -1,11 +1,78 @@
 import type { LibraryDoc } from '@/demo/types'
 
 /**
+ * Resúmenes de documentación Schüco aportada en Drive (origin 'schueco'). Redactados en español
+ * con referencia de página; el PDF original no se publica con la web.
+ */
+const SCHUECO_DOCS: LibraryDoc[] = [
+  {
+    id: 'sc-ct70', slug: 'schueco-ct-70-informacion-tecnica', kind: 'ficha', title: 'Schüco CT 70 · información técnica',
+    description: 'Resumen del catálogo de pedidos y fabricación CT 70 / CT 70 Accent (2026-09) y del folleto CT 70 Classic.',
+    category: 'Fichas técnicas', products: ['Schüco CT 70'], manufacturer: 'Schüco', language: 'en', version: '75455 · 2026-09', date: '2026-09-01',
+    visibility: 'profesional', status: 'publicado', origin: 'schueco', sourceFile: 'Catalogos/Schüco CT 70 Schüco CT 70 Accent -Catalogo.pdf', readingMinutes: 3,
+    sections: [
+      { id: 'dimensiones', title: 'Dimensiones (catálogo, p. 13)', body: ['Profundidad de marco: 70 mm (Classic), 70 mm (Rondo), 112 mm (Accent).', 'Profundidad de hoja: 70 mm (Classic), 78 mm (Rondo), 70 mm (Accent).', 'Espesor de vidrio posible: de 4 a 42 mm.'] },
+      { id: 'ensayos', title: 'Ensayos y normas (catálogo, p. 13)', body: ['Uf = 1,3 W/(m²K) según DIN EN 12412-2.', 'Aislamiento acústico Rw,P máximo de 47 dB (DIN EN ISO 140-3), según perfil y vidrio.', 'Resistencia a la efracción RC 2 (DIN EN 1627).', 'Permeabilidad al aire clase 4 · estanqueidad al agua clase 9A · resistencia al viento clase B5 (según perfil y vidrio) · esfuerzo mecánico clase 4 · durabilidad clase 2 · fuerzas de maniobra clase 1.'] },
+      { id: 'tipos', title: 'Tipos de elemento (catálogo, p. 14)', body: ['Ventanas y balconeras de una o varias hojas, balconeras con umbral, puertas de servicio y puertas de entrada.'] },
+      { id: 'folleto', title: 'Folleto CT 70 Classic', body: ['Cinco cámaras de aislamiento, 70 mm de profundidad y dos planos de junta perimetrales (p. 4).', 'Refuerzos de acero con protección anticorrosión en marco y hoja (p. 4).', 'Hasta 49 dB con vidrio acústico y Uf «hasta 1,2 W/(m²K)» según el folleto (pp. 7 y 15). El catálogo técnico de 2026 indica Uf = 1,3 W/(m²K): prevalece el catálogo técnico salvo indicación de Deken.', 'Más de 300 superficies y umbral sin barreras para balconeras (p. 15).'] },
+      { id: 'condiciones', title: 'Cómo leer estos valores', body: ['Son valores del fabricante para configuraciones ensayadas. Uf es la transmitancia del marco, no la de la ventana (Uw), que depende del vidrio y de la medida.'] },
+    ],
+  },
+  {
+    id: 'sc-living', slug: 'schueco-living-classic', kind: 'ficha', title: 'Schüco LivIng Classic · resumen del folleto',
+    description: 'Sistema de 82 mm y 7 cámaras: versiones 82 AS y 82 MD, valores Uf, acústica y seguridad.',
+    category: 'Fichas técnicas', products: ['Schüco LivIng'], manufacturer: 'Schüco', language: 'en', version: 'folleto', date: '2026-11-05',
+    visibility: 'profesional', status: 'publicado', origin: 'schueco', sourceFile: 'Folletos/Living-Folleto.pdf', readingMinutes: 2,
+    sections: [
+      { id: 'sistema', title: 'Sistema (pp. 8–9)', body: ['Profundidad de 82 mm y perfil de 7 cámaras.', 'LivIng Classic 82 AS: dos planos de junta, Uf desde 1,0 W/(m²K).', 'LivIng Classic 82 MD: tres planos de junta, Uf desde 0,96 W/(m²K).', 'Vidrios aislantes y especiales de 16 a 54 mm.'] },
+      { id: 'confort', title: 'Acústica y juntas (pp. 4–5)', body: ['Hasta 47 dB combinando el sistema con vidrio acústico.', 'Juntas de alta recuperación de forma para mantener la estanqueidad con el uso.'] },
+      { id: 'seguridad', title: 'Seguridad (p. 7)', body: ['Herrajes con cierres de seta y acero; con vidrio de seguridad adicional se alcanza la clase RC 2.'] },
+      { id: 'diseno', title: 'Diseño (pp. 10–12)', body: ['Gama Schüco UnlimitedFinish con más de 300 colores lisos, metalizados y maderas; colores distintos por dentro y por fuera.', 'Disponible también en PVC gris en masa.'] },
+    ],
+  },
+  {
+    id: 'sc-focusing', slug: 'schueco-focusing', kind: 'ficha', title: 'Schüco FocusIng · resumen del folleto',
+    description: 'Sistema lineal de 70/76 mm con núcleo de hasta un 50 % de material reciclado.',
+    category: 'Fichas técnicas', products: ['Schüco FocusIng'], manufacturer: 'Schüco', language: 'en', version: 'folleto', date: '2026-11-05',
+    visibility: 'profesional', status: 'publicado', origin: 'schueco', sourceFile: 'Folletos/Focussing-Folleto.pdf', readingMinutes: 2,
+    sections: [
+      { id: 'sistema', title: 'Sistema (pp. 3 y 14)', body: ['Profundidad de 70 o 76 mm, construcción de 5/6 cámaras y dos juntas.', 'Vidrios de 10 a 54 mm.', 'Uf desde 1,1 W/(m²K).', 'El cuadro de ventajas (p. 19) indica Uw < 0,80 W/(m²K) sin precisar la configuración ensayada.'] },
+      { id: 'confort', title: 'Acústica y seguridad (pp. 13 y 15)', body: ['Hasta 48 dB con vidrio acústico.', 'RC 2 con vidrio de seguridad adicional.'] },
+      { id: 'sostenibilidad', title: 'Sostenibilidad (pp. 3 y 9)', body: ['Núcleo con hasta un 50 % de PVC reciclado y capa exterior de PVC primario.', 'Sello Vinyl verified de VinylPlus®.'] },
+    ],
+  },
+  {
+    id: 'sc-softslide', slug: 'schueco-softslide', kind: 'ficha', title: 'Schüco SoftSlide · información técnica',
+    description: 'Resumen del catálogo de pedidos y fabricación (09.2023): dimensiones, ensayos y rodillos.',
+    category: 'Fichas técnicas', products: ['Schüco SoftSlide'], manufacturer: 'Schüco', language: 'es', version: '09.2023', date: '2023-09-01',
+    visibility: 'profesional', status: 'publicado', origin: 'schueco', sourceFile: 'Catalogos/Softslide-Catalogo.pdf', readingMinutes: 2,
+    sections: [
+      { id: 'dimensiones', title: 'Dimensiones (B1, p. 11)', body: ['Profundidad de marco 74 mm y de hoja 50 mm.', 'Espesor de acristalamiento de 4 a 28 mm.'] },
+      { id: 'ensayos', title: 'Ensayos (B1, p. 11)', body: ['Uf entre 1,4 y 2,3 W/(m²K) según perfil (DIN EN 12412-2).', 'Permeabilidad al aire clase 4 · estanqueidad al agua clase 6A · viento clase B3 · esfuerzo mecánico clase 4 · durabilidad clase 2 · fuerzas de maniobra clase 1.'] },
+      { id: 'rodillos', title: 'Rodillos (B2)', body: ['Rodillos de 50 kg (no regulables) y de 120 kg, regulables en altura de −1,5 a +5,5 mm.'] },
+    ],
+  },
+  {
+    id: 'sc-otros', slug: 'otros-sistemas-documentados', kind: 'ficha', title: 'Otros sistemas documentados: LivIng Alu Inside, Corona S 150 y TopAlu',
+    description: 'Documentación aportada de sistemas que no figuran en la web actual de Deken. Disponibilidad por confirmar.',
+    category: 'Fichas técnicas', products: ['Schüco LivIng Alu Inside', 'Schüco Corona S 150', 'Schüco TopAlu'], manufacturer: 'Schüco', language: 'de', version: 'varios', date: '2026-11-05',
+    visibility: 'interno', status: 'revision', origin: 'schueco', readingMinutes: 2,
+    sections: [
+      { id: 'alu-inside', title: 'LivIng Alu Inside (folleto, pp. 4–9)', body: ['82 mm y 7 cámaras sin refuerzo de acero: la rigidez la aporta un compuesto de aluminio.', 'Uf desde 0,79 W/(m²K), tres planos de junta, vidrios de 16 a 54 mm, hasta 46 dB y RC 2 con vidrio de seguridad.'] },
+      { id: 's150', title: 'Corona S 150 (catálogo 12.2011, K1)', body: ['Corredera basada en Corona CT 70 AS; hoja de 70 mm; vidrios hasta 40 mm; hojas de hasta 250 kg; ancho visto total 164 mm. Edición antigua.'] },
+      { id: 'topalu', title: 'TopAlu (catálogo 11.2016, pp. 8–9)', body: ['Tapas exteriores de aluminio para LivIng, Alu Inside SI 82, Corona SI 82, Corona CT 70 AS, ThermoSlide SI 82 y EasySlide CT 70.', 'Lacado RAL, SIKKENS o NCS, acabados decorativos y anodizados.'] },
+      { id: 'decision', title: 'Pendiente', body: ['[Revisar] Confirmar con Deken si estos sistemas forman parte de su oferta antes de publicarlos.'] },
+    ],
+  },
+]
+
+/**
  * Documentos y guías CREADOS PARA LA DEMO. No proceden de catálogos Schüco ni de
  * documentación técnica de Deken (aún no aportada). Cuando se aporten archivos reales,
  * sustituir aquí o en el futuro servicio de contenidos (ver docs/SIGUIENTE_FASE.md).
  */
 export const LIBRARY_SEED: LibraryDoc[] = [
+  ...SCHUECO_DOCS,
   {
     id: 'd1', slug: 'tipos-de-apertura', kind: 'guia', title: 'Tipos de apertura: cómo se mueve cada ventana',
     description: 'Practicable, oscilobatiente, corredera y elevadora explicadas por su movimiento y por el espacio que necesitan.',
@@ -43,18 +110,6 @@ export const LIBRARY_SEED: LibraryDoc[] = [
       { id: 'interior-exterior', title: 'Interior y exterior', body: ['Es posible plantear un acabado distinto por cada cara: por ejemplo, exterior oscuro acorde con la fachada e interior blanco.', 'La combinación concreta y su disponibilidad se confirman en la propuesta.'] },
       { id: 'muestras', title: 'Pantalla frente a muestra física', body: ['Los colores de la pantalla son orientativos. Para decidir, pide una muestra física o la referencia de color correspondiente.'] },
       { id: 'siguiente', title: 'Siguiente paso', body: ['Prueba combinaciones en el configurador visual y guarda la que quieras consultar.'] },
-    ],
-  },
-  {
-    id: 'd4', slug: 'ficha-muestra-ejemplo-a', kind: 'ficha', title: 'Ficha de muestra · Ejemplo A (practicable) — DEMO',
-    description: 'Documento ficticio para revisar la maqueta de una ficha técnica. Sus valores no corresponden a ningún producto real.',
-    category: 'Fichas técnicas', products: ['Ejemplo A'], manufacturer: 'Producto genérico de demostración',
-    language: 'es', version: '0.1-demo', date: '2026-10-10', visibility: 'profesional', status: 'publicado', origin: 'demo', readingMinutes: 2,
-    sections: [
-      { id: 'aviso', title: 'Aviso', body: ['Documento de demostración. Los valores numéricos son ficticios y solo sirven para comprobar el diseño de la ficha y del comparador.'] },
-      { id: 'descripcion', title: 'Descripción', body: ['Ventana practicable de una o dos hojas, apertura interior.'] },
-      { id: 'prestaciones', title: 'Prestaciones (valores ficticios)', body: ['Uf (marco): 1,2 W/m²K — valor ficticio de maqueta.', 'Ug (vidrio): 1,0 W/m²K — valor ficticio, depende de la composición.', 'Uw (ventana): 1,3 W/m²K — valor ficticio para una medida de referencia.'] },
-      { id: 'condiciones', title: 'Condiciones', body: ['En una ficha real, cada valor deberá indicar fuente, ensayo o cálculo, medida de referencia y composición.'] },
     ],
   },
   {

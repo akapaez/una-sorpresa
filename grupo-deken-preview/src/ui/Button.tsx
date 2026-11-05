@@ -12,8 +12,8 @@ const sizes: Record<Size, string> = {
 }
 const variants: Record<Variant, string> = {
   // Verde Deken con texto grafito (7,97:1). Nunca blanco sobre verde.
-  primary: 'bg-green text-night hover:bg-[#86c63e] shadow-[inset_0_-1px_0_rgb(0_0_0/0.12)]',
-  dark: 'bg-night text-white hover:bg-night-3',
+  primary: 'bg-green text-[#1F2224] hover:bg-[#86c63e] shadow-[inset_0_-1px_0_rgb(0_0_0/0.12)]',
+  dark: 'bg-[#383E42] text-white hover:bg-[#22272A]', // «gd-btn--oscuro» del kit web
   outline: 'border border-line-2 bg-surface text-ink hover:border-ink-3 hover:bg-paper',
   ghost: 'text-ink hover:bg-paper-2',
   'outline-dark': 'border border-white/25 text-white hover:border-white/60 hover:bg-white/5',

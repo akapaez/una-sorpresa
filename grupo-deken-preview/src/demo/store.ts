@@ -82,7 +82,7 @@ const initial = () => ({
   chat: [] as ChatMsg[],
   advisor: { step: 0, answers: {}, done: false } as AdvisorState,
   draft: initialDraft(),
-  compare: ['ej-a', 'ej-b'],
+  compare: ['s-ct70', 's-living'],
   welcomeSeen: {} as Record<string, boolean>,
 })
 
@@ -335,7 +335,9 @@ export const useDemo = create<DemoState>()(
     }),
     {
       name: 'deken-demo-v1',
-      version: 1,
+      // v2: biblioteca con documentación Schüco y comparador con series reales → se reinicia la demo.
+      version: 2,
+      migrate: (old, v) => (v < 2 ? { ...initial(), role: (old as { role?: Role })?.role ?? 'visitante' } : old) as never,
       storage: createJSONStorage(() => {
         try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); return localStorage } catch {
           const mem = new Map<string, string>()

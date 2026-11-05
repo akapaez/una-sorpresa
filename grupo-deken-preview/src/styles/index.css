@@ -9,33 +9,33 @@
    ------------------------------------------------------------------ */
 @theme {
   --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-mono: "Montserrat", ui-sans-serif, system-ui, sans-serif; /* etiquetas: Montserrat 600 (manual de marca) */
 
   /* Marca */
   --color-green: #76b82a;
-  --color-green-ink: #457512;   /* texto verde sobre claro · 5,06:1 */
-  --color-green-deep: #3f6b10;  /* hover / foco sobre claro */
+  --color-green-ink: #4A7A19;   /* «Verde texto» del manual · 5,1:1 sobre blanco */
+  --color-green-deep: #3C6414;  /* hover / foco sobre claro */
   --color-green-soft: #eef5e4;  /* fondo de selección muy suave */
   --color-brand-grey: #383e42;
 
   /* Base clara (papel cálido) */
-  --color-paper: #f6f5f1;
-  --color-paper-2: #efede7;
+  --color-paper: #F4F5F2;   /* «Gris claro» del manual */
+  --color-paper-2: #ECEEE9;
   --color-surface: #ffffff;
-  --color-line: #dedbd3;
-  --color-line-2: #cbc7bd;
-  --color-ink: #15181a;     /* 16,3:1 sobre papel */
-  --color-ink-2: #4a5257;   /* 7,3:1 */
-  --color-ink-3: #646d73;   /* 4,8:1 */
+  --color-line: #D5D8D3;    /* «Borde» del manual */
+  --color-line-2: #C2C6C0;
+  --color-ink: #383E42;     /* «Antracita» · 9,9:1 sobre gris claro */
+  --color-ink-2: #5C6266;   /* «Antracita 2» · 5,6:1 */
+  --color-ink-3: #61686C;   /* 5,2:1 */
 
   /* Escenas oscuras (grafito derivado del gris Deken) */
   --color-night: #0d0e0f;
-  --color-night-2: #16191a;
-  --color-night-3: #1f2325;
-  --color-night-line: #383e42;
+  --color-night-2: #383E42; /* antracita de marca para superficies oscuras */
+  --color-night-3: #454C51;
+  --color-night-line: #555C61;
   --color-fog: #ffffff;
-  --color-fog-2: #a1aaaf;   /* 7,5:1 sobre night-2 */
-  --color-fog-3: #7b878f;   /* 4,8:1 sobre night-2 */
+  --color-fog-2: #C9CED1;   /* 6,8:1 sobre antracita */
+  --color-fog-3: #A1AAAF;   /* 4,6:1 sobre antracita */
 
   /* Estados (sin segundo acento de marca: tonos funcionales apagados) */
   --color-warn: #8a5a00;
@@ -88,7 +88,7 @@ body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-weight: 450;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
@@ -108,10 +108,10 @@ body {
   text-wrap: balance;
 }
 .label {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 .tnum { font-variant-numeric: tabular-nums; }
@@ -178,12 +178,12 @@ textarea.field { min-height: 110px; resize: vertical; }
   display: flex; align-items: center; gap: 0; white-space: nowrap;
   transform: translate(-5px, -50%);
   transition: opacity 200ms;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
 }
 .part-label__dot { width: 9px; height: 9px; border-radius: 99px; background: var(--color-green); box-shadow: 0 0 0 3px rgb(13 14 15 / 0.55); flex: none; }
 .part-label__line { width: 28px; height: 1px; background: rgb(255 255 255 / 0.55); }
 .part-label__text {
-  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;
   color: #fff; background: rgb(13 14 15 / 0.82); border: 1px solid #383e42;
   padding: 5px 9px; border-radius: 4px; backdrop-filter: blur(4px);
 }

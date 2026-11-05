@@ -51,7 +51,7 @@ function Shell({ side, top, children, dark, title }: { side: ReactNode; top?: Re
   return (
     <div className="flex min-h-[calc(100dvh-2.5rem)]">
       <aside className={`sticky top-0 hidden h-[calc(100dvh)] w-[252px] shrink-0 flex-col border-r lg:flex ${dark ? 'dark-scene border-night-line bg-night-2' : 'border-line bg-paper-2'}`}>
-        <div className="flex h-16 items-center px-5"><Link to="/" aria-label="Ir a la web pública"><Logo dark={dark} /></Link></div>
+        <div className="flex h-16 items-center px-5"><Link to="/" aria-label="Ir a la web pública"><Logo dark={dark} width={150} /></Link></div>
         <div className="thin-scroll flex-1 overflow-y-auto px-3 pb-6 pt-2">{side}</div>
         <div className={`border-t px-5 py-3 ${dark ? 'border-night-line' : 'border-line'}`}>
           <Link to="/" className={`inline-flex items-center gap-2 text-[0.8rem] font-semibold ${dark ? 'text-fog-2 hover:text-white' : 'text-ink-2 hover:text-ink'}`}><ArrowLeft size={14} aria-hidden /> Web pública</Link>

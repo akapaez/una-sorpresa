@@ -4,8 +4,7 @@ import { DEFAULT_CONFIG } from '@/three/windowSpec'
 /**
  * Catálogo de la previsualización.
  * - TIPOLOGÍA = cómo abre (atributo de apertura).
- * - SERIE = familia de perfil (atributo de sistema). Denominaciones tomadas de la web actual de
- *   Deken; asignación a tipologías, prestaciones y disponibilidad PENDIENTES de documentación.
+ * - SERIE = familia de perfil (atributo de sistema). Datos en series.ts, con documento y página.
  * - VIDRIO = composición (atributo de acristalamiento). No se mezclan.
  */
 
@@ -77,15 +76,8 @@ export const SOLUTIONS: Solution[] = [
   },
 ]
 
-export interface Series { slug: string; name: string; note: string }
-/** Denominaciones de la web actual. Sin atribuir características hasta verificar documentación. */
-export const SERIES: Series[] = [
-  { slug: 'schueco-ct-70', name: 'Schüco CT 70', note: 'Denominación presente en la web actual de Deken.' },
-  { slug: 'schueco-living', name: 'Schüco LivIng', note: 'Denominación presente en la web actual de Deken.' },
-  { slug: 'schueco-softslide', name: 'Schüco SoftSlide', note: 'Denominación presente en la web actual de Deken.' },
-  { slug: 'schueco-focusing', name: 'Schüco FocusIng', note: 'Denominación presente en la web actual de Deken.' },
-  { slug: 'soluciones-elevadoras', name: 'Soluciones elevadoras', note: 'Denominación genérica presente en la web actual de Deken.' },
-]
+/** Series de perfil: ver `src/content/series.ts` (datos con fuente y página). */
+export { SERIES_INFO as SERIES } from './series'
 
 export const FINISHES: { id: FinishId; name: string; swatch: string; note: string }[] = [
   { id: 'blanco', name: 'Blanco', swatch: '#efeeea', note: 'Muestra visual' },

@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { ArrowRight, SearchX, Box } from 'lucide-react'
-import { SOLUTIONS, SERIES } from '@/content/solutions'
+import { SOLUTIONS } from '@/content/solutions'
+import { SeriesGrid } from './Series'
 import { Eyebrow, EmptyState, Badge } from '@/ui/primitives'
 import { Button } from '@/ui/Button'
 import { Poster } from '@/ui/Poster'
@@ -91,24 +92,8 @@ export default function Solutions() {
         </section>
       ) : (
         <section className="mx-auto max-w-[1440px] px-4 pb-24 sm:px-6 lg:px-10">
-          <div className="rounded-[16px] border border-line bg-surface">
-            <div className="border-b border-line p-5 md:p-6">
-              <p className="font-bold">Familias de perfil</p>
-              <p className="mt-1 max-w-3xl text-[0.9rem] text-ink-2">Denominaciones tomadas de la web actual de Deken. Antes de atribuir tipologías, prestaciones o disponibilidad a cada serie, se verificará la documentación técnica oficial. Mientras tanto, cada ficha permite solicitarla.</p>
-            </div>
-            <ul>
-              {SERIES.map((s) => (
-                <li key={s.slug} className="grid gap-3 border-b border-line p-5 last:border-b-0 md:grid-cols-[1.2fr_1.6fr_auto] md:items-center md:p-6">
-                  <p className="text-[1.15rem] font-extrabold tracking-tight">{s.name}</p>
-                  <div className="text-[0.88rem] text-ink-2">
-                    <p>{s.note}</p>
-                    <p className="mt-1"><Badge tone="warn">Pendiente de documentación</Badge></p>
-                  </div>
-                  <Button to={`/contacto?asunto=${encodeURIComponent('Ficha técnica ' + s.name)}`} variant="outline" size="sm">Consultar ficha técnica</Button>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <SeriesGrid />
+          <p className="mt-6 text-[0.84rem] text-ink-3">Cifras tomadas de folletos y catálogos técnicos Schüco; cada ficha indica documento y página. <Link to="/series" className="font-semibold text-green-ink hover:underline">Ver todas las series</Link></p>
         </section>
       )}
     </div>

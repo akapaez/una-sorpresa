@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router'
-import { ArrowLeft, ArrowRight, CheckCircle2, Clock, Truck, FileText, MapPin, ScrollText } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle2, Clock, Truck, FileText, MapPin, MessageCircle, ScrollText } from 'lucide-react'
 import { useDemo } from '@/demo/store'
 import { Button } from '@/ui/Button'
 import { Eyebrow, Notice, SelectInput, TextArea, TextInput, Badge, DemoTag } from '@/ui/primitives'
@@ -209,7 +209,8 @@ export function Contact() {
           <div className="mt-10 space-y-6 border-t border-line pt-8">
             <div className="flex gap-4"><Truck className="shrink-0 text-green-ink" aria-hidden /><div><p className="font-bold">Condiciones de suministro</p><p className="mt-1 text-[0.92rem] text-ink-2">Transporte propio habitual en Sevilla capital y provincia. Los pedidos de otras zonas de España se estudian cuando el cliente organiza el transporte; no se ofrece una red nacional de reparto.</p></div></div>
             <div className="flex gap-4"><ScrollText className="shrink-0 text-green-ink" aria-hidden /><div><p className="font-bold">Solo profesionales</p><p className="mt-1 text-[0.92rem] text-ink-2">Fabricación y suministro para constructoras, reformistas, carpinterías, promotoras y estudios técnicos. Sin venta directa a particulares.</p></div></div>
-            <Notice tone="neutral" title="Datos de contacto">Los datos de contacto de la web actual deberán verificarse antes de la versión definitiva. En esta demo, el envío queda registrado solo en el navegador.</Notice>
+            <div className="flex gap-4"><MessageCircle className="shrink-0 text-green-ink" aria-hidden /><div><p className="font-bold">WhatsApp comercial</p><p className="mt-1 text-[0.92rem] text-ink-2"><span className="tnum font-semibold text-ink">626 01 92 09</span> · el número publicado en la web actual de Deken. En esta previsualización no se abre WhatsApp ni se envía nada.</p></div></div>
+            <Notice tone="neutral" title="Envío simulado">El formulario solo registra la consulta en este navegador para revisar el flujo.</Notice>
           </div>
         </div>
         <div className="rounded-[18px] border border-line bg-surface p-5 shadow-2 md:p-8">
@@ -240,9 +241,34 @@ export function Contact() {
           )}
         </div>
       </section>
+      <section className="border-t border-line bg-paper-2">
+        <div className="mx-auto grid max-w-[1440px] gap-10 px-4 py-16 sm:px-6 md:py-20 lg:grid-cols-[0.8fr_1.4fr] lg:px-10">
+          <div>
+            <p className="label text-ink-3">Preguntas frecuentes</p>
+            <h2 className="display mt-3 text-[2rem] md:text-[2.6rem]">Antes de pedir presupuesto.</h2>
+          </div>
+          <div className="divide-y divide-line border-y border-line">
+            {FAQ.map((f) => (
+              <details key={f.q} className="group py-1">
+                <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 text-[1.02rem] font-bold [&::-webkit-details-marker]:hidden">{f.q}<span className="text-[1.4rem] font-normal text-ink-3 transition-transform group-open:rotate-45" aria-hidden>+</span></summary>
+                <p className="pb-5 pr-8 text-[0.95rem] text-ink-2">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
+
+/** Adaptadas de las preguntas frecuentes de grupodeken.es. */
+const FAQ = [
+  { q: '¿Trabajáis con particulares?', a: 'No. Fabricamos para constructoras, reformistas, promotoras, estudios técnicos y otros profesionales. No hacemos venta directa a particulares.' },
+  { q: '¿Instaláis material de otros fabricantes?', a: 'No. Fabricamos y suministramos nuestros propios cerramientos de PVC a medida; no instalamos material suministrado por terceros.' },
+  { q: '¿Qué necesito para pedir presupuesto?', a: 'Medidas y unidades, tipo de proyecto, localidad de la obra, serie y acabados deseados y, si los tienes, planos o memoria técnica. Un PDF acotado basta para empezar.' },
+  { q: '¿Fabricáis para obras fuera de Sevilla?', a: 'La actividad se centra en Sevilla capital y provincia, con transporte propio. Los proyectos de otras zonas se estudian cuando el cliente organiza el transporte.' },
+  { q: '¿Qué series Schüco fabricáis?', a: 'CT 70, LivIng, FocusIng, SoftSlide y correderas elevadoras (LivIngSlide y FocusIngSlide). Cada serie tiene su ficha con los datos del fabricante.' },
+]
 
 /* ------------------------------------ Acceso profesional ------------------------------------ */
 const PROFILES = ['Constructora', 'Empresa de reformas', 'Carpintería', 'Promotora', 'Estudio técnico', 'Otro profesional']

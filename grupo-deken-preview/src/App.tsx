@@ -5,6 +5,7 @@ import { PublicLayout } from '@/layouts/PublicLayout'
 import { ProLayout, DekenLayout } from '@/layouts/AppShell'
 import { Toaster } from '@/ui/Dialog'
 import Solutions from '@/pages/public/Solutions'
+import { SeriesDetail, SeriesIndex } from '@/pages/public/Series'
 import { Contact, Knowledge, KnowledgeDetail, Legal, Manufacturing, ProfessionalAccess } from '@/pages/public/Pages'
 import NotFound from '@/pages/public/NotFound'
 import * as Pro from '@/pages/pro'
@@ -51,6 +52,8 @@ const router = createRouter([
           { index: true, element: S(<Home />) },
           { path: 'soluciones', element: <Solutions /> },
           { path: 'soluciones/:slug', element: S(<SolutionDetail />) },
+          { path: 'series', element: <SeriesIndex /> },
+          { path: 'series/:slug', element: <SeriesDetail /> },
           { path: 'fabricacion', element: <Manufacturing /> },
           { path: 'conocimiento', element: <Knowledge /> },
           { path: 'conocimiento/:slug', element: <KnowledgeDetail /> },

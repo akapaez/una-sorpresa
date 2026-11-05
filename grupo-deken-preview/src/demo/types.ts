@@ -153,8 +153,10 @@ export interface LibraryDoc {
   visibility: Visibility
   status: EditorialStatus
   sections: DocSection[]
-  /** Siempre 'demo' en esta entrega: no hay catálogos reales aportados todavía. */
-  origin: 'demo'
+  /** 'demo': redactado para la demostración. 'schueco': resumen de un folleto o catálogo Schüco aportado. */
+  origin: 'demo' | 'schueco'
+  /** Documento original (no se publica con la web: solo se cita). */
+  sourceFile?: string
   fromCluster?: string
   readingMinutes?: number
 }

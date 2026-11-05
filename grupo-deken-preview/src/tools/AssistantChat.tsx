@@ -9,17 +9,47 @@ import { SelectInput } from '@/ui/primitives'
 
 /**
  * ASISTENTE DE DEMOSTRACIÓN
- * Respuestas predefinidas mediante reglas locales sobre documentos de muestra. No usa IA ni
- * accede a catálogos reales. Cada fuente apunta a un documento y sección que existen en la demo.
+ * Respuestas predefinidas mediante reglas locales. No usa IA. Las respuestas técnicas citan los
+ * resúmenes de folletos y catálogos Schüco de la biblioteca (documento y sección existentes).
  */
 interface Rule { test: RegExp; text: string; sources: { docId: string; sectionId: string }[]; kind?: ChatMsg['kind']; link?: { to: string; label: string } }
 
 const RULES: Rule[] = [
   {
-    test: /\b(uw|uf|ug|rw|db|decibel|transmitancia|aislamiento|ac[uú]stic|t[eé]rmic|ct ?70|living|softslide|focusing|valor(es)?)\b/i,
+    test: /\buw\b/i,
     kind: 'sin-documentacion',
-    text: 'No dispongo de documentación técnica verificada para responder con valores. En esta demo todavía no se han incorporado las fichas oficiales de las series, y no daré cifras sin fuente.\n\nPuedo trasladar la pregunta al equipo técnico para que la responda con la documentación correspondiente.',
-    sources: [{ docId: 'd4', sectionId: 'condiciones' }],
+    text: 'El Uw (transmitancia de la ventana completa) no figura en la documentación aportada: depende de la composición de vidrio y de la medida, y se calcula para cada propuesta. No daré una cifra sin fuente.\n\nLo documentado es el Uf del marco: CT 70 1,3 W/(m²K) (catálogo 2026), LivIng desde 1,0 (AS) o 0,96 (MD), FocusIng desde 1,1 y SoftSlide entre 1,4 y 2,3.\n\nPuedo trasladar la pregunta al equipo técnico para que la calcule con tu configuración.',
+    sources: [{ docId: 'sc-ct70', sectionId: 'ensayos' }, { docId: 'sc-ct70', sectionId: 'condiciones' }],
+  },
+  {
+    test: /ct ?-?70/i,
+    text: 'Schüco CT 70, según el catálogo de pedidos y fabricación (2026-09):\n• Marco de 70 mm (Classic y Rondo; 112 mm en Accent) y vidrios de 4 a 42 mm.\n• Uf = 1,3 W/(m²K) (marco). El folleto Classic indica «hasta 1,2».\n• Rw,P máximo 47 dB (el folleto Classic cita hasta 49 dB con vidrio acústico) y RC 2.\n• Aire clase 4, agua 9A, viento B5.\n\nEl Uw (ventana completa) no figura en la documentación: depende del vidrio y de la medida. Puedo trasladar la consulta al equipo técnico para calcularlo con tu configuración.',
+    sources: [{ docId: 'sc-ct70', sectionId: 'dimensiones' }, { docId: 'sc-ct70', sectionId: 'ensayos' }, { docId: 'sc-ct70', sectionId: 'folleto' }],
+    link: { to: '/profesional/comparador', label: 'Abrir comparador' },
+  },
+  {
+    test: /living/i,
+    text: 'Schüco LivIng Classic: 82 mm y 7 cámaras.\n• 82 AS (dos planos de junta): Uf desde 1,0 W/(m²K).\n• 82 MD (tres planos de junta): Uf desde 0,96 W/(m²K).\n• Vidrios de 16 a 54 mm, hasta 47 dB con vidrio acústico y RC 2 con vidrio de seguridad.\n\nQué versión fabrica Deken está pendiente de confirmar.',
+    sources: [{ docId: 'sc-living', sectionId: 'sistema' }, { docId: 'sc-living', sectionId: 'confort' }, { docId: 'sc-living', sectionId: 'seguridad' }],
+    link: { to: '/series/schueco-living', label: 'Ver ficha de la serie' },
+  },
+  {
+    test: /focus/i,
+    text: 'Schüco FocusIng: profundidad de 70 o 76 mm, 5/6 cámaras y dos juntas; vidrios de 10 a 54 mm; Uf desde 1,1 W/(m²K); hasta 48 dB con vidrio acústico y RC 2 con vidrio de seguridad. Su núcleo lleva hasta un 50 % de PVC reciclado.',
+    sources: [{ docId: 'sc-focusing', sectionId: 'sistema' }, { docId: 'sc-focusing', sectionId: 'confort' }, { docId: 'sc-focusing', sectionId: 'sostenibilidad' }],
+    link: { to: '/series/schueco-focusing', label: 'Ver ficha de la serie' },
+  },
+  {
+    test: /soft ?slide/i,
+    text: 'Schüco SoftSlide (catálogo 09.2023): marco de 74 mm y hoja de 50 mm, vidrios de 4 a 28 mm, Uf entre 1,4 y 2,3 W/(m²K) según perfil, aire clase 4, agua 6A, viento B3. Rodillos para hojas de hasta 50 o 120 kg.',
+    sources: [{ docId: 'sc-softslide', sectionId: 'dimensiones' }, { docId: 'sc-softslide', sectionId: 'ensayos' }, { docId: 'sc-softslide', sectionId: 'rodillos' }],
+    link: { to: '/series/schueco-softslide', label: 'Ver ficha de la serie' },
+  },
+  {
+    test: /\b(uw|uf|ug|rw|db|decibel|transmitancia|aislamiento|ac[uú]stic|t[eé]rmic|valor(es)?)\b/i,
+    text: 'Conviene distinguir tres valores: Uf (marco), Ug (vidrio) y Uw (ventana completa, para una medida y un vidrio concretos). Los folletos y catálogos dan Uf y el aislamiento acústico máximo de cada serie; el Uw de tu ventana depende de la composición de vidrio y se calcula en la propuesta.\n\nDime la serie (CT 70, LivIng, FocusIng o SoftSlide) y te doy los valores documentados con su página.',
+    sources: [{ docId: 'sc-ct70', sectionId: 'condiciones' }],
+    link: { to: '/profesional/comparador', label: 'Comparar series' },
   },
   {
     test: /(oscilo|practicable|corredera|elevad|apertura|abre|abrir|bascul)/i,
@@ -57,6 +87,7 @@ const SUGGESTED = [
   '¿Puedo elegir un acabado distinto por dentro y por fuera?',
   '¿Dónde encuentro los albaranes de un pedido?',
   '¿Qué Uw tiene la serie CT 70?',
+  '¿Qué diferencia hay entre LivIng AS y MD?',
 ]
 
 export function answer(q: string): ChatMsg {
@@ -134,7 +165,7 @@ export function AssistantChat({ compact = false, initialQuestion }: { compact?: 
               })}
               {m.sources && m.sources.length > 0 && (
                 <div className="mt-3 border-t border-line pt-2">
-                  <p className="label !text-[0.58rem] text-ink-3">Fuentes de la demo</p>
+                  <p className="label !text-[0.58rem] text-ink-3">Fuentes</p>
                   <ul className="mt-1.5 flex flex-wrap gap-1.5">
                     {m.sources.map((s) => {
                       const d = docTitle(s.docId)

@@ -38,11 +38,11 @@ export function Comparator() {
   return (
     <div>
       <PageHeader eyebrow="Herramientas" title="Comparador" text="Compara hasta tres opciones por categorías homogéneas. Cada dato numérico lleva unidad, contexto y fuente." />
-      <Notice tone="warn" className="mb-5" title="Sin datos técnicos reales todavía">Los valores de «Ejemplo A/B/C» son ficticios y solo sirven para revisar el diseño de la tabla. Las series Schüco se muestran sin cifras hasta incorporar su documentación oficial.</Notice>
+      <Notice className="mb-5" title="Datos de folletos y catálogos Schüco">Cada cifra indica su documento de origen (número volado). Corresponde a la configuración ensayada por el fabricante, no a cualquier ventana de la serie. «Sin dato confirmado» significa que no figura en la documentación leída.</Notice>
       <div className="mb-4 flex flex-wrap items-center gap-2">
         {items.map((i) => (
           <span key={i.id} className="inline-flex min-h-10 items-center gap-2 rounded-full border border-line bg-surface pl-4 pr-1 text-[0.84rem] font-semibold">
-            {i.name}{i.kind === 'ejemplo' && <DemoTag>valores ficticios</DemoTag>}
+            {i.name}
             <button onClick={() => setIds(ids.filter((x) => x !== i.id))} disabled={items.length <= 2} className="grid h-8 w-8 place-items-center rounded-full hover:bg-paper-2 disabled:opacity-30" aria-label={`Quitar ${i.name}`}><X size={15} /></button>
           </span>
         ))}
@@ -63,7 +63,7 @@ export function Comparator() {
                 {items.map((i) => (
                   <th key={i.id} scope="col" className="px-4 py-3 align-bottom">
                     <span className="block text-[0.95rem] font-extrabold">{i.name}</span>
-                    <span className="mt-1 block">{i.kind === 'ejemplo' ? <Badge tone="warn">Ejemplo · ficticio</Badge> : <Badge>Serie · sin datos</Badge>}</span>
+                    <span className="mt-1 block"><Badge tone="green">Serie Schüco</Badge></span>
                   </th>
                 ))}
               </tr>
@@ -101,7 +101,7 @@ export function Comparator() {
         <ul className="space-y-2">
           {COMPARE_ITEMS.filter((x) => !ids.includes(x.id)).map((x) => (
             <li key={x.id}><button onClick={() => { setIds([...ids, x.id]); setPicker(false) }} className="flex w-full items-center justify-between rounded-[10px] border border-line p-3 text-left hover:border-ink-3">
-              <span className="font-semibold">{x.name}</span>{x.kind === 'ejemplo' ? <Badge tone="warn">Valores ficticios</Badge> : <Badge>Sin datos</Badge>}
+              <span className="font-semibold">{x.name}</span><Badge tone="green">Con fuente</Badge>
             </button></li>
           ))}
         </ul>
@@ -276,7 +276,7 @@ export function Advisor() {
             <h2 className="text-[1.05rem] font-bold">Qué revisará Deken</h2>
             <ul className="mt-3 space-y-2">{result.review.map((x) => <li key={x} className="flex gap-3 text-[0.9rem] text-ink-2"><span className="mt-2.5 h-px w-3 shrink-0 bg-green" aria-hidden />{x}</li>)}</ul>
             <div className="mt-6 flex flex-wrap gap-2 border-t border-line pt-5">
-              <Button variant="dark" icon={<Columns3 size={15} aria-hidden />} onClick={() => { const ids = Array.from(new Set(result.recs.map((r) => TYPOLOGY_TO_EXAMPLE[r.slug]))); setCompare(ids.length >= 2 ? ids.slice(0, 3) : [...ids, ids[0] === 'ej-a' ? 'ej-b' : 'ej-a']); nav('/profesional/comparador') }}>Comparar opciones</Button>
+              <Button variant="dark" icon={<Columns3 size={15} aria-hidden />} onClick={() => { const ids = Array.from(new Set(result.recs.map((r) => TYPOLOGY_TO_EXAMPLE[r.slug]))); setCompare(ids.length >= 2 ? ids.slice(0, 3) : [...ids, ids[0] === 's-ct70' ? 's-living' : 's-ct70']); nav('/profesional/comparador') }}>Comparar opciones</Button>
               <Button variant="outline" icon={<BookOpen size={15} aria-hidden />} to="/profesional/biblioteca/tipos-de-apertura">Guía de aperturas</Button>
               <Button icon={<Send size={15} aria-hidden />} onClick={() => configure(result.recs[0].slug)}>Preparar solicitud</Button>
             </div>
@@ -316,7 +316,7 @@ export function LibraryList() {
   const active = Object.values(f).filter(Boolean).length + (q ? 1 : 0)
   return (
     <div>
-      <PageHeader eyebrow="Herramientas" title="Biblioteca" text="Documentación profesional y guías aprobadas. En esta entrega todos los documentos son de demostración: los catálogos y fichas reales se incorporarán cuando se aporten." />
+      <PageHeader eyebrow="Herramientas" title="Biblioteca" text="Documentación profesional y guías aprobadas. Las fichas Schüco resumen los folletos y catálogos aportados, con su página; las guías marcadas como demo se redactaron para la previsualización." />
       <div className="mb-5 rounded-[14px] border border-line bg-surface p-4">
         <label htmlFor="lib-q" className="sr-only">Buscar en la biblioteca</label>
         <input id="lib-q" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar por título o contenido…" className="field" />
@@ -335,7 +335,7 @@ export function LibraryList() {
             <li key={d.id} className="border-b border-line last:border-0">
               <Link to={`/profesional/biblioteca/${d.slug}`} className="grid gap-2 px-5 py-4 hover:bg-paper/70 md:grid-cols-[1fr_auto] md:items-center">
                 <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2"><Badge>{KIND[d.kind]}</Badge><Badge tone={d.visibility === 'publico' ? 'green' : 'info'}>{d.visibility === 'publico' ? 'Público' : 'Profesional'}</Badge><DemoTag>Doc. de demostración</DemoTag></div>
+                  <div className="flex flex-wrap items-center gap-2"><Badge>{KIND[d.kind]}</Badge><Badge tone={d.visibility === 'publico' ? 'green' : 'info'}>{d.visibility === 'publico' ? 'Público' : 'Profesional'}</Badge>{d.origin === 'schueco' ? <Badge tone="green">Resumen de doc. Schüco</Badge> : <DemoTag>Doc. de demostración</DemoTag>}</div>
                   <p className="mt-2 text-[1rem] font-bold">{d.title}</p>
                   <p className="mt-0.5 text-[0.86rem] text-ink-2">{d.description}</p>
                 </div>
@@ -366,7 +366,7 @@ export function LibraryDetail() {
       <Link to="/profesional/biblioteca" className="mb-4 inline-flex min-h-9 items-center gap-1.5 text-[0.84rem] font-semibold text-ink-2 hover:text-ink">← Biblioteca</Link>
       <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
         <article className="min-w-0 rounded-[16px] border border-line bg-surface p-5 md:p-8">
-          <div className="flex flex-wrap items-center gap-2"><Badge>{KIND[d.kind]}</Badge><DemoTag>Documento creado para la demo</DemoTag></div>
+          <div className="flex flex-wrap items-center gap-2"><Badge>{KIND[d.kind]}</Badge>{d.origin === 'schueco' ? <Badge tone="green">Resumen de documentación Schüco</Badge> : <DemoTag>Documento creado para la demo</DemoTag>}</div>
           <h1 className="h-section mt-4 text-[1.8rem] md:text-[2.2rem]">{d.title}</h1>
           <p className="mt-3 text-ink-2">{d.description}</p>
           {d.sections.map((s) => (
@@ -381,12 +381,12 @@ export function LibraryDetail() {
             <dl className="space-y-3 text-[0.86rem]">
               <div><dt className="label text-ink-3">Categoría</dt><dd className="mt-0.5 font-semibold">{d.category}</dd></div>
               <div><dt className="label text-ink-3">Productos relacionados</dt><dd className="mt-0.5">{d.products.length ? d.products.join(', ') : '—'}</dd></div>
-              <div><dt className="label text-ink-3">Origen</dt><dd className="mt-0.5">{d.manufacturer} · demo</dd></div>
+              <div><dt className="label text-ink-3">Origen</dt><dd className="mt-0.5">{d.origin === 'schueco' ? `${d.manufacturer} · resumen en español${d.sourceFile ? ` de «${d.sourceFile.split('/').pop()}»` : ''}; el original no se publica` : `${d.manufacturer} · demo`}</dd></div>
               <div><dt className="label text-ink-3">Versión</dt><dd className="tnum mt-0.5">{d.version} · {fmtDate(d.date)}</dd></div>
               <div><dt className="label text-ink-3">Idioma original</dt><dd className="mt-0.5">{LANG[d.language]}</dd></div>
             </dl>
             <div className="mt-5 flex flex-col gap-2">
-              <Button icon={<FileDown size={15} aria-hidden />} onClick={async () => { await downloadLibraryDoc(d); toast('PDF de demostración descargado', d.title) }}>Descargar PDF (demo)</Button>
+              <Button icon={<FileDown size={15} aria-hidden />} onClick={async () => { await downloadLibraryDoc(d); toast(d.origin === 'schueco' ? 'Resumen descargado' : 'PDF de demostración descargado', d.title) }}>{d.origin === 'schueco' ? 'Descargar resumen (PDF)' : 'Descargar PDF (demo)'}</Button>
               <Button variant="dark" icon={<Bot size={15} aria-hidden />} onClick={() => setChat(true)}>Preguntar al asistente</Button>
             </div>
           </div>

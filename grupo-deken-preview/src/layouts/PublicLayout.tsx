@@ -9,6 +9,7 @@ import { Dialog } from '@/ui/Dialog'
 
 const NAV = [
   { to: '/soluciones', label: t.nav.soluciones },
+  { to: '/series', label: 'Series' },
   { to: '/fabricacion', label: t.nav.fabricacion },
   { to: '/conocimiento', label: t.nav.conocimiento },
   { to: '/contacto', label: t.nav.contacto },
@@ -52,7 +53,7 @@ export function PublicHeader() {
   return (
     <header className={`sticky top-0 z-40 transition-colors duration-300 ${dark ? 'bg-[rgb(13_14_15/0.72)] text-white backdrop-blur-xl backdrop-saturate-150' : 'border-b border-black/5 bg-[rgb(246_245_241/0.78)] text-ink backdrop-blur-xl backdrop-saturate-150'}`}>
       <div className="mx-auto flex h-12 max-w-[1200px] items-center gap-6 px-4 sm:px-6">
-        <Link to="/" className="shrink-0 rounded-md" aria-label="Grupo Deken · inicio"><Logo dark={dark} className="scale-[0.82] origin-left" /></Link>
+        <Link to="/" className="shrink-0 rounded-md" aria-label="Grupo Deken · inicio"><Logo dark={dark} width={146} /></Link>
         <nav aria-label="Principal" className="mx-auto hidden items-center gap-2 lg:flex">
           {NAV.map((n) => (
             <NavLink key={n.to} to={n.to} className={({ isActive }) => `relative rounded-md px-3 py-1.5 text-[0.78rem] font-medium tracking-[0.01em] transition-colors ${isActive ? (dark ? 'text-white' : 'text-ink') : dark ? 'text-white/70 hover:text-white' : 'text-ink-2 hover:text-ink'}`}>
@@ -87,7 +88,7 @@ export function PublicFooter() {
       <div className="mx-auto max-w-[1440px] px-4 pb-10 pt-16 sm:px-6 lg:px-10">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Logo dark />
+            <Logo dark width={200} />
             <p className="mt-5 max-w-sm text-[0.9rem] leading-relaxed text-fog-2">
               Fabricación y suministro de ventanas, puertas y cerramientos de PVC con sistemas Schüco para profesionales. Santiponce, Sevilla.
             </p>

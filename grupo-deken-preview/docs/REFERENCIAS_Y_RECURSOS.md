@@ -1,6 +1,6 @@
 # Referencias y recursos
 
-Registro de lo consultado, lo usado y sus condiciones. Fecha de consulta: 4 de noviembre de 2026.
+Registro de lo consultado, lo usado y sus condiciones. Primera consulta: 4 de noviembre de 2026. Actualizado el 5 de noviembre de 2026 con la carpeta de Google Drive «DEKEN» y una segunda revisión de grupodeken.es.
 
 ## 1. Web actual de Grupo Deken — https://grupodeken.es/
 
@@ -10,7 +10,13 @@ Revisión real con navegador headless (Playwright/Chromium) en 1440×900 y 390×
 
 **Extraído como texto (no verificado):** «Distribuidor oficial Schüco · Sevilla», «Hasta 52 dB», «Clasificación A++», «Más de 15 años», «desde 2009», tres testimonios sin nombre, contadores «0+» (valor inicial de animación en el HTML), teléfono de WhatsApp, menciones a CT 70, LivIng, SoftSlide, FocusIng y Elevadoras, y un texto «Preparado para sustituirlo por el catálogo real del cliente».
 
-**Uso en la previsualización:** solo la estructura comunicativa (B2B, sin venta a particulares, Sevilla y provincia) y las denominaciones de series, marcadas como «pendiente de documentación». **No se reutiliza** ninguna cifra, garantía, certificación, testimonio ni fecha.
+**Segunda revisión (5/11/2026), portada y `catalogo.php`:** ficha por serie (CT-70, SoftSlide, LivIng, FocusIng, Elevadoras con LivIngSlide 194/82 mm y FocusIngSlide 167/70 mm), siete tipologías, gama de acabados (blanco, gris antracita, negro texturizado, roble dorado, nogal, roble oscuro, antracita madera, bicolor), proceso en tres pasos, cuatro preguntas frecuentes y WhatsApp 626 01 92 09.
+
+**Uso en la previsualización:**
+- Se adaptan (reescritos): posicionamiento B2B, preguntas frecuentes (página de contacto), proceso, gama de acabados, lista de series y tipologías, y el teléfono de WhatsApp como texto (sin enlace activo).
+- Las cifras de series se toman **de la documentación Schüco** de Drive. Solo las elevadoras usan cifras de la web de Deken, marcadas «según web Deken; sin contrastar», porque su catálogo no se pudo leer.
+- Coincidencias comprobadas: CT 70 Uf 1,2 y 49 dB (folleto Classic), SoftSlide 74/50 mm y 4–28 mm, LivIng 82 mm / 7 cámaras / 47 dB, FocusIng 70/76 mm / 48 dB.
+- **No se reutilizan:** «Hasta 52 dB» y «A++» (ningún documento aportado los respalda; el máximo documentado es 49 dB), «15 años de garantía», «desde 2009», «Más de 15 años», los testimonios y el sello «Distribuidor oficial Schüco» (pendiente de que Deken lo confirme).
 
 ## 2. 21st.dev — https://21st.dev/
 
@@ -48,6 +54,25 @@ No se instaló ninguna skill externa ni se hizo ninguna modificación global.
 
 ## 4. Documentación técnica consultada
 
+### 4.1 Carpeta de Google Drive «DEKEN» (aportada por Cristian)
+
+| Documento | Lectura | Uso |
+|---|---|---|
+| Folletos/CT70-Classic-FOLLETO.pdf (alemán) | Completa | Ficha CT 70: 5 cámaras, 2 juntas, acero, RC 2, 49 dB, Uf ≤ 1,2, > 300 superficies. |
+| Folletos/CT70-Rondo-Folleto.pdf (alemán, edición antigua) | Completa | Contexto de la variante Rondo (no se usan cifras propias). |
+| Folletos/Living-Folleto.pdf (inglés) | Completa | Ficha LivIng: 82 mm, 7 cámaras, AS Uf 1,0 / MD Uf 0,96, vidrio 16–54 mm, 47 dB, RC 2. |
+| Folletos/Focussing-Folleto.pdf (inglés) | Completa | Ficha FocusIng: 70/76 mm, 5/6 cámaras, Uf 1,1, Uw < 0,80 (sin configuración), 48 dB, reciclado ≤ 50 %. |
+| Folletos/Living-Aluside-Folleto.pdf (alemán) | Completa | Solo en biblioteca interna: no figura en la web de Deken. |
+| Catalogos/Schüco CT 70 … Accent -Catalogo.pdf (inglés, 2026-09) | Parcial (texto extraído; se buscaron las páginas de características) | p. 13: profundidades, vidrio 4–42, Uf 1,3, Rw,P 47 dB, RC 2, clases 4 / 9A / B5. |
+| Catalogos/Softslide-Catalogo.pdf (español, 09.2023) | Parcial (características B1–B2) | 74/50 mm, vidrio 4–28, Uf 1,4–2,3, clases 4 / 6A / B3, rodillos 50/120 kg. |
+| Catalogos/150-Catalogo.pdf (Corona S 150, 2011) | Parcial (K1) | Solo biblioteca interna. |
+| Catalogos/Acabados-Catalogo.pdf | Parcial | Es el catálogo **Schüco TopAlu** (tapas de aluminio), no una carta de colores. |
+| Catalogos/FocusIng-Catalogo.pdf, LivingSlide-Catalogo.pdf, living-catalogo.pdf | **No leídos** | El conector devuelve texto vacío (PDF de imagen o demasiado grandes: 50, 70 y 150 MB). |
+| DXF`s/ | Carpeta vacía | — |
+| Recursos-Deken/grupo-deken-kit-web | Completa | Manual de marca, tokens, logotipos SVG oficiales y favicon. |
+
+Los PDF originales **no se copian ni se publican**: la web cita título, edición y página. Las fichas son resúmenes redactados en español.
+
 - React Three Fiber (v9, compatible con React 19.2), drei 10, Three.js r180.
 - GSAP 3.15 con ScrollTrigger. Licencia estándar «no charge» de GSAP (https://gsap.com/standard-license), que permite este uso.
 - Vite 7, React Router 7, Tailwind CSS 4, Zustand 5, jsPDF 4 (tipos revisados en `node_modules/jspdf/types`).
@@ -76,10 +101,11 @@ No se instaló ninguna skill externa ni se hizo ninguna modificación global.
 | Modelo 3D de ventana (`src/three/*`) | **Aproximación de demostración** | Geometría procedural original: perfiles ingletados, solape de hoja, junquillo, juntas, doble/triple vidrio con intercalario, manilla y bisagras. No procede de DXF ni representa ninguna serie Schüco. |
 | Imágenes de producto (`public/renders/*.jpg`) | **Aproximación de demostración** | Generadas desde el mismo modelo con `scripts/render-posters.mjs`. No son fotografías ni obras de Deken. |
 | Textura madera, granulado antracita, fondo de escena | Aproximación de demostración | Procedurales (canvas). No representan foils concretos. |
-| Logotipo | **Provisional** | Composición tipográfica en `src/brand/Logo.tsx` (único punto de sustitución). |
-| Tipografías | Recurso de terceros (OFL) | Montserrat e IBM Plex Mono vía @fontsource. |
+| Logotipo y favicon | **Oficial** (kit web de Deken en Drive) | SVG horizontal y monograma en `src/brand/svg/`, coloreados con `currentColor`; favicon y iconos de app generados desde `favicon.svg`. |
+| Tipografías | Recurso de terceros (OFL) | Montserrat (500–800) vía @fontsource, según el manual de marca. |
 | Iconos | Recurso de terceros (ISC) | lucide-react. |
-| Guías, fichas, muestrario y plantillas (`src/content/library.ts`) | Contenido de demostración | Marcados como demo en título o metadatos. |
+| Fichas de series (`src/content/series.ts`) y resúmenes Schüco de la biblioteca | **Datos reales con fuente** | Cada valor con documento y página. |
+| Guías, muestrario y plantillas (`src/content/library.ts`) | Contenido de demostración | Marcados como demo en título o metadatos. |
 | Plantilla de importación (`public/samples/importacion-pedidos-EJEMPLO.csv`) | Archivo de demostración | Identificada como «no es el formato real de PrefSuite». |
 | PDF descargables | Generados en el navegador | Todos llevan «DOCUMENTO DE DEMOSTRACIÓN» y marca de agua. |
-| Activos reales de Deken | **Ninguno disponible** | Ver `DECISIONES_Y_PENDIENTES.md`. |
+| Fotografías propias de Deken | **Pendientes** | Cristian las aportará; huecos en `src/content/media.ts`. |
