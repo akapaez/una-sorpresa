@@ -1,340 +1,333 @@
+import { useLayoutEffect, useMemo, useRef, type ReactNode } from 'react'
 import { Link } from 'react-router'
-import { ArrowRight, ArrowUpRight, Box, Columns3, Compass, Library, FolderKanban, Truck } from 'lucide-react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ChevronRight, Box, Columns3, Compass, Library, FolderKanban, Truck } from 'lucide-react'
 import { HomeHero, SUPPLY } from './HomeHero'
 import { SOLUTIONS } from '@/content/solutions'
+import { MEDIA } from '@/content/media'
 import { Button } from '@/ui/Button'
-import { Eyebrow } from '@/ui/primitives'
 import { OpeningGlyph } from '@/ui/OpeningGlyph'
-import { CompareSlider } from '@/ui/CompareSlider'
 import { Poster } from '@/ui/Poster'
 import { useDemo } from '@/demo/store'
 import { AcousticIllustration } from '@/tools/illustrations'
+import { prefersReducedMotion } from '@/three/quality'
+import { asset } from '@/lib/asset'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const H2 = 'display text-[2.6rem] leading-[1.02] sm:text-[3.8rem] lg:text-[5rem]'
+const LEAD = 'mx-auto max-w-[40rem] text-[1.1rem] leading-snug md:text-[1.35rem]'
 
 export default function Home() {
   return (
     <>
       <HomeHero />
-      <SupplySection />
-      <TypologiesSection />
-      <MaterialSection />
-      <ComfortSection />
-      <GuidedSection />
-      <ProcessSection />
-      <ToolsSection />
-      <GuidesSection />
-      <ClosingSection />
+      <Statement />
+      <FullBleed />
+      <Typologies />
+      <Finishes />
+      <Comfort />
+      <Process />
+      <Tools />
+      <Guides />
+      <Closing />
     </>
   )
 }
 
-function Container({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return <div className={`mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 ${className}`}>{children}</div>
+function MoreLink({ to, children, dark = false }: { to: string; children: ReactNode; dark?: boolean }) {
+  return <Link to={to} className={`inline-flex min-h-11 items-center gap-1 text-[1.05rem] font-semibold hover:underline ${dark ? 'text-green' : 'text-green-ink'}`}>{children}<ChevronRight size={18} aria-hidden /></Link>
 }
 
-/** En escritorio estos datos ya aparecen dentro del panel de transición de la portada. */
-function SupplySection() {
-  const items = SUPPLY
+/* 1 · Declaración: las palabras se iluminan al desplazarse ------------------------------------- */
+function Statement() {
+  const ref = useRef<HTMLDivElement>(null)
+  const text = 'Fabricamos ventanas, puertas y cerramientos de PVC para constructoras, reformistas, promotoras y estudios técnicos. A medida de cada hueco. Con sistemas Schüco. Para Sevilla y provincia.'
+  const words = useMemo(() => text.split(' '), [text])
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const spans = Array.from(el.querySelectorAll<HTMLSpanElement>('[data-w]'))
+    if (prefersReducedMotion()) { spans.forEach((s) => (s.style.opacity = '1')); return }
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: el, start: 'top 75%', end: 'bottom 45%', scrub: true,
+        onUpdate: (self) => {
+          const n = spans.length
+          spans.forEach((s, i) => { const t = Math.min(1, Math.max(0, self.progress * n * 1.15 - i)); s.style.opacity = String(0.16 + 0.84 * t) })
+        },
+      })
+    }, el)
+    return () => ctx.revert()
+  }, [])
   return (
-    <section className="border-t border-line bg-paper py-16 md:hidden" data-theme="light">
-      <Container>
-        <ol className="grid gap-0 md:grid-cols-3">
-          {items.map((it, i) => (
-            <li key={it.k} className={`border-line py-8 md:px-8 md:py-2 ${i > 0 ? 'border-t md:border-l md:border-t-0' : ''} ${i === 0 ? 'md:pl-0' : ''}`}>
-              <p className="label tnum text-ink-3">{String(i + 1).padStart(2, '0')} · {it.k}</p>
-              <p className="mt-4 text-[1.3rem] font-bold leading-snug tracking-tight md:text-[1.45rem]">{it.t}</p>
-              <p className="mt-3 text-[0.92rem] text-ink-2">{it.s}</p>
-            </li>
-          ))}
-        </ol>
-      </Container>
-    </section>
-  )
-}
-
-function TypologiesSection() {
-  return (
-    <section className="bg-paper pb-20 pt-10 md:pb-28 md:pt-20" data-theme="light">
-      <Container>
-        <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <div>
-            <Eyebrow className="mb-4">Tipologías</Eyebrow>
-            <h2 className="h-section max-w-2xl text-[2rem] md:text-[2.8rem]">Cada hueco pide un movimiento distinto.</h2>
-          </div>
-          <p className="max-w-sm text-[0.95rem] text-ink-2">Pasa el cursor o enfoca cada tipología para ver cómo abre. La serie y el vidrio se eligen después, para cada proyecto.</p>
-        </div>
-        <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-6 md:gap-3 md:overflow-visible md:px-0 md:pb-0 thin-scroll">
-          {SOLUTIONS.map((s, i) => (
-            <li key={s.slug} className={`w-[74vw] shrink-0 snap-start sm:w-[46vw] md:w-auto ${i < 2 ? 'md:col-span-3 lg:col-span-2' : 'md:col-span-2'} ${i === 0 ? 'lg:col-span-2' : ''}`}>
-              <Link to={`/soluciones/${s.slug}`} className="glyph-host group relative block aspect-[4/5] overflow-hidden rounded-[14px] bg-night text-white md:aspect-[5/6]">
-                <Poster src={s.poster} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.035]" />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgb(13_14_15/0.92)_100%)]" aria-hidden />
-                <div className="absolute left-4 top-4 rounded-[8px] border border-white/15 bg-night/60 p-2 text-white backdrop-blur" aria-hidden>
-                  <OpeningGlyph slug={s.slug} className="h-10 w-auto" />
-                </div>
-                {s.status === 'ficha-visual' && <span className="label absolute right-4 top-4 rounded-[4px] bg-night/70 px-2 py-1 !text-[0.6rem] text-fog-2">Ficha visual</span>}
-                <div className="absolute inset-x-0 bottom-0 p-5">
-                  <p className="text-[1.25rem] font-extrabold tracking-tight">{s.name}</p>
-                  <p className="mt-1 text-[0.86rem] text-fog-2">{s.short}</p>
-                  <p className="mt-3 inline-flex items-center gap-1.5 text-[0.8rem] font-semibold text-green">Ver ficha <ArrowRight size={14} aria-hidden /></p>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </Container>
-    </section>
-  )
-}
-
-function MaterialSection() {
-  return (
-    <section className="dark-scene grain relative overflow-hidden py-20 md:py-28" data-theme="dark">
-      <Container>
-        <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <Eyebrow dark className="mb-4">Material, vidrio y acabado</Eyebrow>
-            <h2 className="h-section text-[2rem] md:text-[2.8rem]">Compara sobre el mismo producto.</h2>
-            <p className="lede mt-5 max-w-md text-[1rem] leading-relaxed text-fog-2">Desliza para pasar de un acabado a otro con la misma luz y el mismo encuadre. Las muestras son visuales: el color definitivo se decide con muestra física.</p>
-            <dl className="mt-10 grid grid-cols-2 gap-6 border-t border-white/10 pt-6">
-              <div><dt className="label text-fog-3">Perfil</dt><dd className="mt-2 text-[0.92rem] text-fog-2">Marco fijo y hoja con solape interior, cantos suavizados.</dd></div>
-              <div><dt className="label text-fog-3">Junta</dt><dd className="mt-2 text-[0.92rem] text-fog-2">Perimetral en marco y a ambos lados del vidrio.</dd></div>
-              <div><dt className="label text-fog-3">Vidrio</dt><dd className="mt-2 text-[0.92rem] text-fog-2">Doble o triple en la representación; composición real según proyecto.</dd></div>
-              <div><dt className="label text-fog-3">Acabado</dt><dd className="mt-2 text-[0.92rem] text-fog-2">Interior y exterior pueden ser distintos.</dd></div>
-            </dl>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-[1.4fr_1fr]">
-            <CompareSlider a="/renders/detalle-blanco.jpg" b="/renders/detalle-antracita.jpg" labelA="Blanco" labelB="Antracita" alt="Detalle de esquina de hoja y manilla" className="aspect-[4/5] rounded-[14px] sm:row-span-2 sm:aspect-auto sm:min-h-[520px]" />
-            <figure className="relative overflow-hidden rounded-[14px] bg-night-2">
-              <Poster src="/renders/detalle-madera.jpg" alt="Detalle de acabado madera de demostración" className="aspect-[4/3] w-full object-cover sm:aspect-auto sm:h-[254px]" />
-              <figcaption className="label absolute bottom-3 left-3 rounded-[4px] bg-night/75 px-2 py-1 !text-[0.6rem] text-white">Madera · textura de demo</figcaption>
-            </figure>
-            <figure className="relative overflow-hidden rounded-[14px] bg-night-2">
-              <Poster src="/renders/vidrio-privacidad.jpg" alt="Vidrio de privacidad en la representación" className="aspect-[4/3] w-full object-cover sm:aspect-auto sm:h-[254px]" />
-              <figcaption className="label absolute bottom-3 left-3 rounded-[4px] bg-night/75 px-2 py-1 !text-[0.6rem] text-white">Vidrio privacidad · muestra</figcaption>
-            </figure>
-          </div>
-        </div>
-      </Container>
-    </section>
-  )
-}
-
-function ComfortSection() {
-  return (
-    <section className="bg-paper py-20 md:py-28" data-theme="light">
-      <Container>
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div className="order-2 lg:order-1">
-            <div className="overflow-hidden rounded-[16px] border border-line bg-surface p-4 shadow-2 md:p-6">
-              <AcousticIllustration closed={false} animated />
-              <p className="label mt-3 !text-[0.6rem] text-ink-3">Explicación ilustrativa · no representa un ensayo ni una cifra de aislamiento</p>
+    <section className="bg-paper px-5 py-28 md:py-44" data-theme="light">
+      <div ref={ref} className="mx-auto max-w-[1100px]">
+        <p className="text-[2rem] font-extrabold leading-[1.12] tracking-[-0.02em] text-ink sm:text-[2.8rem] lg:text-[3.8rem]">
+          {words.map((w, i) => <span key={i} data-w style={{ opacity: 0.16, transition: 'opacity 120ms linear' }}>{w} </span>)}
+        </p>
+        <dl className="mt-20 grid gap-10 border-t border-line pt-10 md:grid-cols-3">
+          {SUPPLY.map((s) => (
+            <div key={s.k}>
+              <dt className="text-[0.95rem] font-semibold text-ink-3">{s.k}</dt>
+              <dd className="mt-2 text-[1.15rem] font-bold leading-snug tracking-tight">{s.t}</dd>
+              <dd className="mt-1.5 text-[0.92rem] text-ink-2">{s.s}</dd>
             </div>
-          </div>
-          <div className="order-1 lg:order-2">
-            <Eyebrow className="mb-4">Confort y aislamiento</Eyebrow>
-            <h2 className="h-section text-[2rem] md:text-[2.8rem]">Entender antes de elegir.</h2>
-            <p className="lede mt-5 max-w-lg text-[1rem] leading-relaxed text-ink-2">
-              El comportamiento acústico y térmico depende del conjunto: perfil, vidrio, juntas, herraje y cómo se integra la ventana en la obra. Por eso explicamos los conceptos de forma visual y dejamos las cifras para la documentación técnica de cada configuración.
-            </p>
-            <ul className="mt-7 space-y-3 text-[0.95rem]">
-              <li className="flex gap-3"><span className="mt-2 h-1.5 w-4 shrink-0 bg-green" aria-hidden />Uf (marco), Ug (vidrio) y Uw (ventana) son valores distintos y no se mezclan.</li>
-              <li className="flex gap-3"><span className="mt-2 h-1.5 w-4 shrink-0 bg-green" aria-hidden />Un dato de catálogo corresponde a una configuración concreta.</li>
-              <li className="flex gap-3"><span className="mt-2 h-1.5 w-4 shrink-0 bg-green" aria-hidden />Las demostraciones interactivas están en el espacio profesional.</li>
-            </ul>
-            <div className="mt-8"><Button to="/profesional/demostraciones" variant="dark" iconRight={<ArrowRight size={17} aria-hidden />}>Ver demostraciones</Button></div>
-          </div>
-        </div>
-      </Container>
+          ))}
+        </dl>
+      </div>
     </section>
   )
 }
 
-function GuidedSection() {
-  const steps = [
-    ['Proyecto', '¿Obra nueva, rehabilitación o reforma? ¿Qué estancia?'],
-    ['Espacio', '¿Hay espacio libre delante del hueco para abrir?'],
-    ['Prioridades', 'Ruido exterior, comportamiento térmico, paso o diseño.'],
-    ['Acabado', 'Interior y exterior, con muestra física antes de decidir.'],
-    ['Documentación', 'Planos, medidas o fotos para la revisión técnica.'],
-  ]
+/* 2 · Imagen a sangre (hueco para fotografía real) ---------------------------------------------- */
+function FullBleed() {
+  const ref = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el || prefersReducedMotion()) return
+    const ctx = gsap.context(() => {
+      gsap.fromTo(el.querySelector('img'), { scale: 1.18 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } })
+    }, el)
+    return () => ctx.revert()
+  }, [])
+  const m = MEDIA.obra
   return (
-    <section className="border-t border-line bg-paper-2 py-20 md:py-28" data-theme="light">
-      <Container>
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr]">
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <Eyebrow className="mb-4">Selección guiada</Eyebrow>
-            <h2 className="h-section text-[2rem] md:text-[2.8rem]">Cinco preguntas antes de la primera propuesta.</h2>
-            <p className="lede mt-5 max-w-md text-[1rem] leading-relaxed text-ink-2">El asesor guiado del espacio profesional recorre estas preguntas y devuelve una orientación explicada, con lo que Deken debe revisar después. No sustituye la revisión técnica.</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button to="/profesional/asesor" iconRight={<ArrowRight size={17} aria-hidden />}>Abrir el asesor</Button>
-              <Button to="/conocimiento/tipos-de-apertura" variant="outline">Guía de aperturas</Button>
-            </div>
-          </div>
-          <ol className="relative">
-            {steps.map(([t, d], i) => (
-              <li key={t} className="group relative grid grid-cols-[3.5rem_1fr] gap-4 border-b border-line py-7 last:border-b-0">
-                <span className="tnum text-[2.4rem] font-extrabold leading-none tracking-tight text-line-2 transition-colors group-hover:text-green-ink">{String(i + 1).padStart(2, '0')}</span>
-                <div>
-                  <p className="text-[1.25rem] font-bold tracking-tight">{t}</p>
-                  <p className="mt-1 text-[0.95rem] text-ink-2">{d}</p>
+    <section ref={ref} className="relative h-[92svh] min-h-[520px] overflow-hidden bg-black text-white" data-theme="dark">
+      <img src={asset(m.src)} alt={m.alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(0_0_0/0.15)_0%,transparent_35%,rgb(0_0_0/0.75)_100%)]" aria-hidden />
+      <div className="absolute inset-x-0 bottom-0 mx-auto max-w-[1200px] px-5 pb-14 md:pb-20">
+        <h2 className="display max-w-[14ch] text-[2.8rem] leading-[1] sm:text-[4.2rem] lg:text-[5.6rem]">Cada hueco, resuelto a medida.</h2>
+        {m.provisional && <p className="label mt-5 !text-[0.58rem] text-white/50">{m.note}</p>}
+      </div>
+    </section>
+  )
+}
+
+/* 3 · Tipologías: galería horizontal fijada (escritorio) o deslizable (móvil) --------------------- */
+function Typologies() {
+  const sec = useRef<HTMLDivElement>(null)
+  const track = useRef<HTMLUListElement>(null)
+  useLayoutEffect(() => {
+    if (!sec.current || !track.current || prefersReducedMotion()) return
+    const mm = gsap.matchMedia()
+    mm.add('(min-width: 1024px)', () => {
+      const t = track.current!
+      const dist = () => Math.max(0, t.scrollWidth - window.innerWidth + 80)
+      gsap.to(t, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: sec.current, start: 'top top', end: () => `+=${dist()}`, pin: true, scrub: true, invalidateOnRefresh: true } })
+    })
+    return () => mm.revert()
+  }, [])
+  return (
+    <section ref={sec} className="overflow-hidden bg-paper py-24 lg:flex lg:h-[100svh] lg:flex-col lg:justify-center lg:pb-0 lg:pt-12" data-theme="light">
+      <div className="mx-auto w-full max-w-[1200px] px-5 text-center lg:text-left">
+        <h2 className={H2}>Elige cómo se abre.</h2>
+        <p className="mt-4 text-[1.1rem] text-ink-2 md:text-[1.3rem]">Seis tipologías. La serie y el vidrio, después.</p>
+      </div>
+      <ul ref={track} className="thin-scroll mt-12 flex lg:mt-8 snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 lg:w-max lg:snap-none lg:overflow-visible lg:px-[max(1.25rem,calc((100vw-1200px)/2+1.25rem))] lg:pb-0">
+        {SOLUTIONS.map((s) => (
+          <li key={s.slug} className="w-[80vw] shrink-0 snap-center sm:w-[56vw] lg:w-[34vw] lg:max-w-[520px]">
+            <Link to={`/soluciones/${s.slug}`} className="glyph-host group block overflow-hidden rounded-[28px] bg-black text-white">
+              <div className="relative aspect-[4/5] lg:aspect-auto lg:h-[54svh]">
+                <Poster src={s.poster} alt="" className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]" />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(0_0_0/0.55)_0%,transparent_30%,transparent_60%,rgb(0_0_0/0.7)_100%)]" aria-hidden />
+                <div className="absolute inset-x-0 top-0 p-6">
+                  <p className="text-[0.9rem] font-semibold text-green">{s.status === 'demo-3d' ? 'Demostración 3D' : 'Ficha visual'}</p>
+                  <p className="mt-1 text-[1.9rem] font-extrabold leading-tight tracking-tight">{s.name}</p>
                 </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </Container>
-    </section>
-  )
-}
-
-function ProcessSection() {
-  const steps = [
-    ['Consulta', 'Nos envías el proyecto: localidad, huecos, planos o medidas.'],
-    ['Revisión técnica', 'Revisamos tipologías, medidas y documentación.'],
-    ['Presupuesto', 'Propuesta con versiones y cambios explicados.'],
-    ['Fabricación', 'Fabricación propia, con el estado del pedido visible en tu espacio.'],
-    ['Suministro', 'Entrega con transporte propio en Sevilla y provincia.'],
-  ]
-  return (
-    <section className="bg-paper py-20 md:py-28" data-theme="light">
-      <Container>
-        <Eyebrow className="mb-4">Forma de trabajar</Eyebrow>
-        <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <h2 className="h-section max-w-2xl text-[2rem] md:text-[2.8rem]">De la consulta a la obra, con cada paso a la vista.</h2>
-          <Button to="/fabricacion" variant="outline" iconRight={<ArrowRight size={16} aria-hidden />}>Cómo fabricamos</Button>
-        </div>
-        <ol className="grid gap-px overflow-hidden rounded-[14px] border border-line bg-line md:grid-cols-5">
-          {steps.map(([t, d], i) => (
-            <li key={t} className="relative bg-surface p-6 md:min-h-[240px]">
-              <div className="mb-8 flex items-center gap-3">
-                <span className="grid h-8 w-8 place-items-center rounded-full border-2 border-green text-[0.8rem] font-extrabold text-ink tnum">{i + 1}</span>
-                {i < steps.length - 1 && <span className="hidden h-px flex-1 bg-line-2 md:block" aria-hidden />}
+                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6">
+                  <p className="max-w-[16rem] text-[0.95rem] text-white/80">{s.short}</p>
+                  <span className="shrink-0 rounded-[10px] border border-white/20 bg-black/40 p-2 backdrop-blur" aria-hidden><OpeningGlyph slug={s.slug} className="h-9 w-auto" /></span>
+                </div>
               </div>
-              <p className="text-[1.1rem] font-bold tracking-tight">{t}</p>
-              <p className="mt-2 text-[0.9rem] text-ink-2">{d}</p>
-            </li>
-          ))}
-        </ol>
-      </Container>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <div className="mx-auto mt-8 w-full max-w-[1200px] px-5 text-center lg:mt-6 lg:text-left"><MoreLink to="/soluciones">Ver todas las soluciones</MoreLink></div>
     </section>
   )
 }
 
-function ToolsSection() {
-  const tools = [
-    { icon: <Box size={18} />, t: 'Configurador 3D', d: 'Tipología, hojas, acabados, vidrio y vistas. Guarda y descarga un resumen PDF.' },
-    { icon: <Columns3 size={18} />, t: 'Comparador', d: 'Categorías homogéneas y diferencias resaltadas, solo con datos con fuente.' },
-    { icon: <Compass size={18} />, t: 'Asesor guiado', d: 'Orientación explicada que continúa hacia comparar o configurar.' },
-    { icon: <Library size={18} />, t: 'Biblioteca y asistente', d: 'Documentación filtrable y preguntas con fuentes consultables.' },
-    { icon: <FolderKanban size={18} />, t: 'Proyectos y presupuestos', d: 'Planos, conversaciones y versiones sin perder el historial.' },
-    { icon: <Truck size={18} />, t: 'Pedidos y entrega', d: 'Estado de fabricación, previsión y documentos asociados.' },
+/* 4 · Acabados: tres capas que se funden con el desplazamiento ----------------------------------- */
+function Finishes() {
+  const ref = useRef<HTMLDivElement>(null)
+  const items = [
+    { k: 'Blanco.', src: '/renders/acabado-blanco.jpg' },
+    { k: 'Antracita.', src: '/renders/acabado-antracita.jpg' },
+    { k: 'Madera.', src: '/renders/acabado-madera.jpg' },
+  ]
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const layers = Array.from(el.querySelectorAll<HTMLElement>('[data-layer]'))
+    const words = Array.from(el.querySelectorAll<HTMLElement>('[data-word]'))
+    const paint = (p: number) => {
+      const f = p * (items.length - 1)
+      const sm = (x: number) => { const t = Math.min(1, Math.max(0, x)); return t * t * (3 - 2 * t) }
+      // Cada capa entra por encima de la anterior (la de abajo sigue opaca): sin oscurecer a mitad de fundido
+      layers.forEach((l, i) => { l.style.opacity = String(i === 0 ? 1 : sm((f - (i - 1) - 0.35) / 0.3)) })
+      words.forEach((w, i) => { const o = Math.max(0, Math.min(1, 1 - (Math.abs(f - i) - 0.22) * 3.2)); w.style.opacity = String(o); w.style.transform = `translate3d(0, ${(i - f) * 36}px, 0)` })
+    }
+    if (prefersReducedMotion()) { paint(0); return }
+    paint(0)
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({ trigger: el, start: 'top top', end: 'bottom bottom', scrub: true, onUpdate: (s) => paint(s.progress) })
+    }, el)
+    return () => ctx.revert()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  return (
+    <section ref={ref} className="relative h-[300svh] bg-black text-white" data-theme="dark">
+      <div className="sticky top-0 h-[100svh] overflow-hidden">
+        {items.map((it, i) => (
+          <div key={it.k} data-layer className="absolute inset-x-0 bottom-0 top-[26%] [mask-image:linear-gradient(180deg,transparent_0%,black_18%)] md:top-[24%]" style={{ opacity: i === 0 ? 1 : 0 }}>
+            <Poster src={it.src} alt={`Ventana de demostración en acabado ${it.k.toLowerCase().replace('.', '')}`} className="h-full w-full object-cover md:mx-auto md:w-auto md:max-w-none md:[mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,black_50%,transparent_100%)]" />
+          </div>
+        ))}
+        <div className="absolute inset-x-0 top-[10%] px-5 text-center md:top-[9%]">
+          <p className="text-[1.05rem] font-semibold text-fog-2 md:text-[1.3rem]">Interior y exterior, cada cara con su acabado.</p>
+          <div className="relative mx-auto mt-3 h-[4.2rem] sm:h-[5.4rem] lg:h-[7rem]">
+            {items.map((it, i) => <p key={it.k} data-word aria-hidden={i > 0} className="display absolute inset-x-0 text-[3.6rem] sm:text-[4.8rem] lg:text-[6.4rem]" style={{ opacity: i === 0 ? 1 : 0 }}>{it.k}</p>)}
+          </div>
+        </div>
+        <div className="absolute inset-x-0 bottom-10 px-5 text-center">
+          <p className="label !text-[0.58rem] text-white/45">Muestras visuales de demostración · el color definitivo se elige con muestra física</p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* 5 · Confort ------------------------------------------------------------------------------------ */
+function Comfort() {
+  return (
+    <section className="bg-black px-5 py-28 text-center text-white md:py-40" data-theme="dark">
+      <h2 className={H2}>Confort,<br /><span className="text-fog-3">de dentro afuera.</span></h2>
+      <p className={`${LEAD} mt-6 text-fog-2`}>Perfil, vidrio, juntas y herraje trabajan juntos. Lo explicamos de forma visual; las cifras, en la documentación técnica de cada configuración.</p>
+      <div className="mx-auto mt-14 max-w-[900px] overflow-hidden rounded-[28px] border border-white/10">
+        <AcousticIllustration closed={false} animated />
+      </div>
+      <p className="label mt-4 !text-[0.58rem] text-white/45">Explicación ilustrativa · no representa un ensayo ni una cifra de aislamiento</p>
+      <div className="mt-8"><MoreLink to="/profesional/demostraciones" dark>Ver las demostraciones</MoreLink></div>
+    </section>
+  )
+}
+
+/* 6 · Proceso ------------------------------------------------------------------------------------ */
+function Process() {
+  const steps = [
+    ['Consulta', 'Localidad, huecos, planos o medidas.'],
+    ['Revisión técnica', 'Tipologías, medidas y documentación.'],
+    ['Presupuesto', 'Versiones con los cambios explicados.'],
+    ['Fabricación', 'Con el estado del pedido a la vista.'],
+    ['Suministro', 'Transporte propio en Sevilla y provincia.'],
   ]
   return (
-    <section className="dark-scene grain relative overflow-hidden py-20 md:py-28" data-theme="dark">
-      <Container>
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.15fr] lg:items-center">
-          <div>
-            <Eyebrow dark className="mb-4">Espacio profesional</Eyebrow>
-            <h2 className="h-section text-[2rem] md:text-[2.8rem]">Herramientas para trabajar el proyecto, no solo para verlo.</h2>
-            <ul className="mt-10 grid gap-x-8 gap-y-6 sm:grid-cols-2">
-              {tools.map((t) => (
-                <li key={t.t} className="flex gap-3">
-                  <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-[8px] border border-white/12 text-green" aria-hidden>{t.icon}</span>
-                  <div><p className="font-bold">{t.t}</p><p className="mt-1 text-[0.88rem] text-fog-2">{t.d}</p></div>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <Button to="/acceso-profesional" size="lg" iconRight={<ArrowUpRight size={17} aria-hidden />}>Solicitar acceso profesional</Button>
-            </div>
-            <p className="mt-4 text-[0.82rem] text-fog-3">Acceso para profesionales aprobados por Deken.</p>
-          </div>
-          <ToolPreview />
-        </div>
-      </Container>
+    <section className="bg-paper py-28 md:py-40" data-theme="light">
+      <div className="mx-auto max-w-[1200px] px-5 text-center">
+        <h2 className={H2}>De la consulta<br />a la obra.</h2>
+        <p className={`${LEAD} mt-6 text-ink-2`}>Cinco pasos. Cada uno, visible en tu espacio profesional.</p>
+      </div>
+      <ol className="thin-scroll mx-auto mt-16 flex max-w-[1200px] snap-x gap-4 overflow-x-auto px-5 pb-4 md:grid md:grid-cols-5 md:overflow-visible">
+        {steps.map(([t, d], i) => (
+          <li key={t} className="w-[62vw] shrink-0 snap-start rounded-[24px] bg-surface p-6 shadow-1 sm:w-[40vw] md:w-auto">
+            <p className="tnum text-[3.4rem] font-extrabold leading-none tracking-tight text-green-ink">{i + 1}</p>
+            <p className="mt-6 text-[1.15rem] font-bold tracking-tight">{t}</p>
+            <p className="mt-1.5 text-[0.92rem] text-ink-2">{d}</p>
+          </li>
+        ))}
+      </ol>
+      <div className="mt-8 text-center"><MoreLink to="/fabricacion">Cómo fabricamos</MoreLink></div>
     </section>
   )
 }
 
-/** Vista previa compuesta con componentes reales de la interfaz (no captura de terceros). */
-function ToolPreview() {
+/* 7 · Herramientas: la maqueta se endereza al desplazarse ---------------------------------------- */
+function Tools() {
+  const ref = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el || prefersReducedMotion()) return
+    const ctx = gsap.context(() => {
+      gsap.fromTo(el.querySelector('[data-device]'), { rotateX: 24, scale: 0.88, y: 40 }, { rotateX: 0, scale: 1, y: 0, ease: 'none', scrollTrigger: { trigger: el, start: 'top 85%', end: 'center 55%', scrub: true } })
+    }, el)
+    return () => ctx.revert()
+  }, [])
+  const tools = [
+    { icon: <Box size={20} />, t: 'Configurador 3D' }, { icon: <Columns3 size={20} />, t: 'Comparador' }, { icon: <Compass size={20} />, t: 'Asesor guiado' },
+    { icon: <Library size={20} />, t: 'Biblioteca y asistente' }, { icon: <FolderKanban size={20} />, t: 'Proyectos y presupuestos' }, { icon: <Truck size={20} />, t: 'Pedidos y entrega' },
+  ]
   return (
-    <div className="relative" aria-hidden>
-      <div className="overflow-hidden rounded-[16px] border border-white/12 bg-night-2 shadow-3">
-        <div className="flex items-center gap-1.5 border-b border-white/8 px-4 py-3">
-          <span className="h-2.5 w-2.5 rounded-full bg-white/15" /><span className="h-2.5 w-2.5 rounded-full bg-white/15" /><span className="h-2.5 w-2.5 rounded-full bg-white/15" />
-          <span className="label ml-3 !text-[0.6rem] text-fog-3">Configurador · CFG-0142-B</span>
+    <section ref={ref} className="overflow-hidden bg-black px-5 py-28 text-white md:py-40" data-theme="dark">
+      <div className="mx-auto max-w-[1100px] text-center">
+        <p className="text-[1.05rem] font-semibold text-green md:text-[1.2rem]">Espacio profesional</p>
+        <h2 className={`${H2} mt-3`}>Todo tu proyecto.<br /><span className="text-fog-3">En un solo lugar.</span></h2>
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          <Button to="/acceso-profesional" className="!rounded-full !px-6">Solicitar acceso profesional</Button>
+          <MoreLink to="/profesional" dark>Ver la demo</MoreLink>
         </div>
-        <div className="grid grid-cols-[1.5fr_1fr]">
-          <Poster src="/renders/balconera.jpg" alt="" className="h-full min-h-[320px] w-full object-cover" />
-          <div className="space-y-4 bg-paper p-4 text-ink">
-            <div><p className="label !text-[0.58rem] text-ink-3">Tipología</p><p className="mt-1 text-[0.86rem] font-bold">Balconera · 2 hojas</p></div>
-            <div><p className="label !text-[0.58rem] text-ink-3">Acabado</p>
-              <div className="mt-1.5 flex gap-1.5"><span className="h-6 w-6 rounded-full border border-line-2 bg-[#efeeea]" /><span className="h-6 w-6 rounded-full border-2 border-green bg-[#3b4146]" /><span className="h-6 w-6 rounded-full border border-line-2 bg-[#946840]" /></div>
+      </div>
+      <div className="mx-auto mt-16 max-w-[1000px] [perspective:1400px]" aria-hidden>
+        <div data-device className="origin-bottom overflow-hidden rounded-[22px] border border-white/12 bg-night-2 shadow-[0_60px_120px_-40px_rgb(118_184_42/0.25)]">
+          <div className="flex items-center gap-1.5 border-b border-white/8 px-4 py-3"><span className="h-2.5 w-2.5 rounded-full bg-white/15" /><span className="h-2.5 w-2.5 rounded-full bg-white/15" /><span className="h-2.5 w-2.5 rounded-full bg-white/15" /><span className="label ml-3 !text-[0.58rem] text-fog-3">Configurador · CFG-0142-B</span></div>
+          <div className="grid sm:grid-cols-[1.5fr_1fr]">
+            <Poster src="/renders/balconera.jpg" alt="" className="h-full min-h-[280px] w-full object-cover" />
+            <div className="hidden space-y-4 bg-paper p-5 text-ink sm:block">
+              <div><p className="label !text-[0.56rem] text-ink-3">Tipología</p><p className="mt-1 text-[0.9rem] font-bold">Balconera · 2 hojas</p></div>
+              <div><p className="label !text-[0.56rem] text-ink-3">Acabado</p><div className="mt-1.5 flex gap-1.5"><span className="h-6 w-6 rounded-full border-2 border-green bg-[#efeeea]" /><span className="h-6 w-6 rounded-full border border-line-2 bg-[#3b4146]" /><span className="h-6 w-6 rounded-full border border-line-2 bg-[#946840]" /></div></div>
+              <div><p className="label !text-[0.56rem] text-ink-3">Medidas introducidas</p><p className="tnum mt-1 text-[0.9rem] font-semibold">1400 × 2200 mm</p></div>
+              <div className="rounded-full bg-green px-3 py-2 text-center text-[0.8rem] font-bold text-night">Solicitar presupuesto</div>
+              <p className="text-[0.7rem] text-ink-3">Sin precio automático. Revisión por Deken.</p>
             </div>
-            <div><p className="label !text-[0.58rem] text-ink-3">Medidas introducidas</p><p className="tnum mt-1 text-[0.86rem] font-semibold">1400 × 2200 mm</p></div>
-            <div className="rounded-[8px] bg-green px-3 py-2 text-center text-[0.78rem] font-bold text-night">Solicitar presupuesto</div>
-            <p className="text-[0.68rem] text-ink-3">Sin precio automático. Revisión por Deken.</p>
           </div>
         </div>
       </div>
-      <div className="absolute -bottom-6 -left-4 hidden w-[58%] rounded-[12px] border border-line bg-surface p-4 text-ink shadow-3 md:block">
-        <p className="label !text-[0.58rem] text-ink-3">Pedido PED-2026-031</p>
-        <p className="mt-1 text-[0.9rem] font-bold">En fabricación</p>
-        <div className="mt-3 flex gap-1">{[1, 1, 1, 0, 0].map((x, i) => <span key={i} className={`h-1.5 flex-1 rounded-full ${x ? 'bg-green' : 'bg-line'}`} />)}</div>
-        <p className="mt-2 text-[0.72rem] text-ink-2">Previsión: semana del 16/11 · por confirmar</p>
-      </div>
-    </div>
+      <ul className="mx-auto mt-16 grid max-w-[1000px] grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3">
+        {tools.map((t) => <li key={t.t} className="flex flex-col items-center gap-3 text-center"><span className="text-green" aria-hidden>{t.icon}</span><span className="text-[1rem] font-semibold">{t.t}</span></li>)}
+      </ul>
+    </section>
   )
 }
 
-function GuidesSection() {
+/* 8 · Guías -------------------------------------------------------------------------------------- */
+function Guides() {
   const library = useDemo((s) => s.library)
   const guides = library.filter((d) => d.kind === 'guia' && d.visibility === 'publico' && d.status === 'publicado')
   return (
-    <section className="bg-paper py-20 md:py-28" data-theme="light">
-      <Container>
-        <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <div>
-            <Eyebrow className="mb-4">Conocimiento</Eyebrow>
-            <h2 className="h-section text-[2rem] md:text-[2.8rem]">Guías útiles antes de pedir presupuesto.</h2>
-          </div>
-          <Button to="/conocimiento" variant="outline" iconRight={<ArrowRight size={16} aria-hidden />}>Todas las guías</Button>
-        </div>
-        <ul className="border-t border-ink">
-          {guides.map((g, i) => (
-            <li key={g.id} className="border-b border-line">
-              <Link to={`/conocimiento/${g.slug}`} className="group grid items-baseline gap-2 py-7 md:grid-cols-[5rem_1.2fr_1fr_auto] md:gap-8">
-                <span className="label tnum text-ink-3">{String(i + 1).padStart(2, '0')}</span>
-                <span className="text-[1.35rem] font-bold leading-snug tracking-tight transition-colors group-hover:text-green-ink md:text-[1.6rem]">{g.title}</span>
-                <span className="text-[0.92rem] text-ink-2">{g.description}</span>
-                <span className="label hidden whitespace-nowrap text-ink-3 md:block">{g.readingMinutes} min →</span>
+    <section className="bg-paper py-28 md:py-36" data-theme="light">
+      <div className="mx-auto max-w-[1100px] px-5">
+        <h2 className={`${H2} text-center`}>Antes de pedir<br />presupuesto.</h2>
+        <ul className="mt-14 grid gap-4 md:grid-cols-3">
+          {guides.slice(0, 3).map((g) => (
+            <li key={g.id}>
+              <Link to={`/conocimiento/${g.slug}`} className="group flex h-full flex-col rounded-[24px] bg-surface p-7 shadow-1 transition-shadow hover:shadow-2">
+                <p className="text-[0.85rem] font-semibold text-ink-3">{g.category} · {g.readingMinutes} min</p>
+                <p className="mt-6 text-[1.4rem] font-extrabold leading-tight tracking-tight">{g.title}</p>
+                <span className="mt-auto inline-flex items-center gap-1 pt-8 font-semibold text-green-ink">Leer <ChevronRight size={16} aria-hidden /></span>
               </Link>
             </li>
           ))}
         </ul>
-      </Container>
+        <div className="mt-8 text-center"><MoreLink to="/conocimiento">Todas las guías</MoreLink></div>
+      </div>
     </section>
   )
 }
 
-function ClosingSection() {
+/* 9 · Cierre ------------------------------------------------------------------------------------- */
+function Closing() {
   return (
-    <section className="bg-paper pb-24" data-theme="light">
-      <Container>
-        <div className="relative overflow-hidden rounded-[20px] bg-night-2 px-6 py-14 text-white md:px-14 md:py-20" data-theme="dark">
-          <Poster src="/renders/cierre.jpg" alt="" className="absolute inset-y-0 right-0 hidden h-full w-[55%] object-cover opacity-80 md:block [mask-image:linear-gradient(90deg,transparent,black_40%)]" />
-          <div className="relative max-w-xl">
-            <Eyebrow dark className="mb-4">Tu próximo proyecto</Eyebrow>
-            <h2 className="display text-[2.1rem] md:text-[3.2rem]">¿Tienes una obra en marcha?</h2>
-            <p className="lede mt-4 text-[1rem] text-fog-2">Solicita acceso profesional para configurar y seguir tus proyectos, o envíanos una consulta con los datos básicos.</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button to="/acceso-profesional" size="lg">Solicitar acceso profesional</Button>
-              <Button to="/contacto" size="lg" variant="outline-dark">Consultar un proyecto</Button>
-            </div>
-          </div>
+    <section className="relative overflow-hidden bg-black px-5 py-32 text-center text-white md:py-48" data-theme="dark">
+      <Poster src="/renders/cierre.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-35" />
+      <div className="relative">
+        <h2 className={H2}>Hablemos de<br />tu próxima obra.</h2>
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+          <Button to="/acceso-profesional" className="!rounded-full !px-6">Solicitar acceso profesional</Button>
+          <MoreLink to="/contacto" dark>Consultar un proyecto</MoreLink>
         </div>
-      </Container>
+      </div>
     </section>
   )
 }

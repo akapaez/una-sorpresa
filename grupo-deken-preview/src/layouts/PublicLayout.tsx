@@ -22,7 +22,7 @@ function useHeaderTheme() {
     let raf = 0
     const check = () => {
       raf = 0
-      const els = document.elementsFromPoint(window.innerWidth / 2, 84)
+      const els = document.elementsFromPoint(window.innerWidth / 2, 24)
       const hit = els.find((e) => (e as HTMLElement).closest?.('[data-theme]') && !(e as HTMLElement).closest('header'))
       const theme = (hit as HTMLElement | undefined)?.closest('[data-theme]')?.getAttribute('data-theme')
       setDark(theme === 'dark')
@@ -50,21 +50,20 @@ export function PublicHeader() {
     : { to: '/acceso-profesional', label: t.nav.acceso }
 
   return (
-    <header className={`sticky top-0 z-40 transition-colors duration-300 ${dark ? 'bg-night/70 text-white backdrop-blur-md' : 'border-b border-line/80 bg-paper/88 text-ink backdrop-blur-md'}`}>
-      <div className="mx-auto flex h-16 max-w-[1440px] items-center gap-6 px-4 sm:px-6 lg:px-10">
-        <Link to="/" className="shrink-0 rounded-md" aria-label="Grupo Deken · inicio"><Logo dark={dark} /></Link>
-        <nav aria-label="Principal" className="ml-4 hidden items-center gap-1 lg:flex">
+    <header className={`sticky top-0 z-40 transition-colors duration-300 ${dark ? 'bg-[rgb(13_14_15/0.72)] text-white backdrop-blur-xl backdrop-saturate-150' : 'border-b border-black/5 bg-[rgb(246_245_241/0.78)] text-ink backdrop-blur-xl backdrop-saturate-150'}`}>
+      <div className="mx-auto flex h-12 max-w-[1200px] items-center gap-6 px-4 sm:px-6">
+        <Link to="/" className="shrink-0 rounded-md" aria-label="Grupo Deken · inicio"><Logo dark={dark} className="scale-[0.82] origin-left" /></Link>
+        <nav aria-label="Principal" className="mx-auto hidden items-center gap-2 lg:flex">
           {NAV.map((n) => (
-            <NavLink key={n.to} to={n.to} className={({ isActive }) => `relative rounded-md px-3 py-2 text-[0.9rem] font-semibold transition-colors ${isActive ? (dark ? 'text-white' : 'text-ink') : dark ? 'text-white/70 hover:text-white' : 'text-ink-2 hover:text-ink'}`}>
+            <NavLink key={n.to} to={n.to} className={({ isActive }) => `relative rounded-md px-3 py-1.5 text-[0.78rem] font-medium tracking-[0.01em] transition-colors ${isActive ? (dark ? 'text-white' : 'text-ink') : dark ? 'text-white/70 hover:text-white' : 'text-ink-2 hover:text-ink'}`}>
               {({ isActive }) => <>{n.label}{isActive && <span className="absolute inset-x-3 -bottom-0.5 h-[2px] bg-green" aria-hidden />}</>}
             </NavLink>
           ))}
         </nav>
-        <div className="ml-auto hidden items-center gap-2 md:flex">
-          <Button to="/contacto" variant={dark ? 'ghost-dark' : 'ghost'} size="sm">{t.cta.presupuesto}</Button>
-          <Button to={cta.to} variant="primary" size="sm" iconRight={<ArrowUpRight size={15} aria-hidden />}>{cta.label}</Button>
+        <div className="ml-auto hidden items-center gap-2 md:flex lg:ml-0">
+          <Button to={cta.to} variant="primary" size="sm" className="!min-h-8 !rounded-full !px-3.5 !text-[0.76rem]" iconRight={<ArrowUpRight size={13} aria-hidden />}>{cta.label}</Button>
         </div>
-        <button onClick={() => setOpen(true)} className={`ml-auto grid h-11 w-11 place-items-center rounded-[8px] md:ml-2 lg:hidden ${dark ? 'hover:bg-white/10' : 'hover:bg-paper-2'}`} aria-label="Abrir menú" aria-expanded={open}>
+        <button onClick={() => setOpen(true)} className={`ml-auto -mr-2 grid h-11 w-11 place-items-center rounded-[8px] md:ml-2 lg:hidden ${dark ? 'hover:bg-white/10' : 'hover:bg-paper-2'}`} aria-label="Abrir menú" aria-expanded={open}>
           <Menu size={22} />
         </button>
       </div>

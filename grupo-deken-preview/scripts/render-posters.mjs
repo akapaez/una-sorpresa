@@ -31,6 +31,10 @@ const jobs = [
   { name: 'detalle-madera', w: 1200, h: 900, q: P({ t: 'practicable', l: 2, f: 'madera', open: 0.3, cam: '0.75,0.5,1.05', look: '0.1,0.32,0', fov: 30 }) },
   { name: 'vidrio-privacidad', w: 1200, h: 900, q: P({ t: 'practicable', l: 2, f: 'blanco', g: 'privacidad', cam: '1.3,1.0,3.0', look: '0,0.72,0' }) },
   { name: 'fabricacion', w: 1600, h: 900, q: P({ t: 'practicable', l: 2, f: 'antracita', explode: 1, cam: '2.9,1.5,2.7', look: '-0.55,0.76,0.3' }) },
+  // Acabados: mismo encuadre exacto para el fundido de la portada
+  { name: 'acabado-blanco', w: 1500, h: 1500, q: P({ t: 'practicable', l: 2, f: 'blanco', cam: '0.85,0.98,4.7', look: '0,0.86,0' }) },
+  { name: 'acabado-antracita', w: 1500, h: 1500, q: P({ t: 'practicable', l: 2, f: 'antracita', cam: '0.85,0.98,4.7', look: '0,0.86,0' }) },
+  { name: 'acabado-madera', w: 1500, h: 1500, q: P({ t: 'practicable', l: 2, f: 'madera', cam: '0.85,0.98,4.7', look: '0,0.86,0' }) },
   { name: 'cierre', w: 1200, h: 900, q: P({ t: 'practicable', l: 2, f: 'antracita', open: 0.85, cam: '1.9,1.15,3.2', look: '-0.25,0.75,0.25' }) },
 ]
 

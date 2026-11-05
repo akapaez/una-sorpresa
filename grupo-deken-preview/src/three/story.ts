@@ -18,47 +18,54 @@ export interface StoryTimeline {
 }
 
 export const DESKTOP: StoryTimeline = {
+  // Composición centrada (texto arriba, producto abajo), al estilo de una página de producto
   keys: [
-    { p: 0, pos: [0.95, 1.05, 4.1], look: [-0.62, 0.8, 0] },
-    { p: 0.14, pos: [0.82, 1.0, 3.85], look: [-0.58, 0.8, 0] },
-    { p: 0.25, pos: [0.6, 0.9, 1.3], look: [-0.34, 0.75, 0] },
-    { p: 0.37, pos: [0.42, 0.97, 1.05], look: [-0.3, 0.78, 0] },
-    { p: 0.47, pos: [1.75, 1.2, 3.1], look: [-0.38, 0.78, 0.25] },
-    { p: 0.61, pos: [1.6, 1.15, 3.0], look: [-0.36, 0.78, 0.3] },
-    { p: 0.71, pos: [2.7, 1.45, 2.6], look: [-0.25, 0.76, 0.3] },
-    { p: 0.83, pos: [2.6, 1.4, 2.5], look: [-0.25, 0.76, 0.3] },
-    { p: 0.95, pos: [0, 0.95, 4.6], look: [0, 0.86, 0] },
-    { p: 1, pos: [0, 0.95, 4.6], look: [0, 0.86, 0] },
+    { p: 0, pos: [0.4, 1.62, 7.2], look: [0, 1.64, 0] },
+    { p: 0.12, pos: [0.85, 1.12, 4.4], look: [0, 1.0, 0] },
+    { p: 0.24, pos: [0.5, 0.92, 1.4], look: [-0.04, 0.8, 0] },
+    { p: 0.37, pos: [0.3, 0.98, 1.08], look: [-0.04, 0.82, 0] },
+    { p: 0.47, pos: [1.75, 1.3, 3.6], look: [0, 0.98, 0.2] },
+    { p: 0.61, pos: [1.6, 1.25, 3.45], look: [0, 0.97, 0.25] },
+    { p: 0.71, pos: [2.95, 1.75, 3.45], look: [-0.1, 1.22, 0.25] },
+    { p: 0.83, pos: [2.85, 1.7, 3.35], look: [-0.1, 1.22, 0.25] },
+    { p: 0.95, pos: [0, 1.05, 5.0], look: [0, 0.95, 0] },
+    { p: 1, pos: [0, 1.05, 5.0], look: [0, 0.95, 0] },
   ],
-  scenes: [0, 0.18, 0.42, 0.64, 0.87],
+  scenes: [0, 0.15, 0.4, 0.65, 0.88],
   handle: [0.42, 0.47, 0.665, 0.69],
   open: [0.47, 0.6, 0.62, 0.665],
   explode: [0.69, 0.8, 0.86, 0.93],
   labels: [0.72, 0.76, 0.845, 0.87],
-  material: [0.27, 0.35],
+  material: [0.27, 0.33],
   overlay: [0.9, 1],
-  pinLength: 320,
+  pinLength: 440,
 }
 
 export const MOBILE: StoryTimeline = {
-  // En móvil la ventana ocupa el tercio inferior para no tapar el texto
+  ...DESKTOP,
   keys: [
     { p: 0, pos: [0.55, 1.95, 6.6], look: [0, 1.95, 0] },
-    { p: 0.22, pos: [0.45, 1.9, 6.4], look: [0, 1.9, 0] },
-    { p: 0.32, pos: [1.5, 1.95, 6.0], look: [0.1, 1.85, 0.2] },
-    { p: 0.56, pos: [1.4, 1.9, 5.9], look: [0.1, 1.85, 0.2] },
-    { p: 0.68, pos: [2.3, 2.0, 5.5], look: [0.05, 1.8, 0.15] },
-    { p: 0.86, pos: [2.2, 1.95, 5.4], look: [0.05, 1.8, 0.15] },
+    { p: 0.12, pos: [0.7, 1.8, 6.0], look: [0, 1.75, 0] },
+    { p: 0.24, pos: [0.55, 1.3, 2.7], look: [0, 1.12, 0] },
+    { p: 0.37, pos: [0.4, 1.32, 2.45], look: [0, 1.12, 0] },
+    { p: 0.47, pos: [1.6, 1.95, 6.0], look: [0.1, 1.8, 0.2] },
+    { p: 0.61, pos: [1.5, 1.9, 5.9], look: [0.1, 1.8, 0.2] },
+    { p: 0.71, pos: [2.7, 2.35, 7.4], look: [-0.12, 1.72, 0.15] },
+    { p: 0.83, pos: [2.6, 2.3, 7.3], look: [-0.12, 1.72, 0.15] },
+    { p: 0.95, pos: [0, 1.9, 6.6], look: [0, 1.9, 0] },
     { p: 1, pos: [0, 1.9, 6.6], look: [0, 1.9, 0] },
   ],
-  scenes: [0, 0.25, 0.58, 0.88],
-  handle: [0.26, 0.3, 0.52, 0.55],
-  open: [0.3, 0.45, 0.48, 0.52],
-  explode: [0.58, 0.7, 0.84, 0.92],
-  labels: [0.64, 0.7, 0.8, 0.84],
-  material: [0.1, 0.2],
-  overlay: [0.9, 1],
-  pinLength: 220,
+  pinLength: 380,
+}
+
+/** Ventanas de visibilidad de cada texto [entra desde, entra hasta, sale desde, sale hasta]. */
+export const TEXT_RANGES: Record<string, [number, number, number, number]> = {
+  intro: [-1, -1, 0.05, 0.12],
+  material: [0.16, 0.21, 0.35, 0.39],
+  blanco: [0.16, 0.21, 0.26, 0.29],
+  antracita: [0.29, 0.32, 0.35, 0.39],
+  funcion: [0.41, 0.46, 0.6, 0.64],
+  interior: [0.66, 0.71, 0.83, 0.87],
 }
 
 export const clamp01 = (x: number) => Math.min(1, Math.max(0, x))
