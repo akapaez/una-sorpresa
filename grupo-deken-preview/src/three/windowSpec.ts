@@ -1,10 +1,9 @@
 /**
  * Especificación geométrica de las ventanas de demostración.
  *
- * IMPORTANTE: geometría APROXIMADA creada para la previsualización. No procede
- * de DXF ni de catálogos Schüco y no representa ninguna serie concreta. Las
- * medidas (m) son orientativas y solo buscan proporciones creíbles.
- * Para sustituirla por perfiles reales, ver docs/SIGUIENTE_FASE.md (DXF → Shape).
+ * - Practicable, oscilobatiente, balconera y puerta: SECCIÓN REAL Schüco LivIng tomada del DXF
+ *   (src/three/profiles). Las medidas del conjunto (ancho, alto) siguen siendo de ejemplo.
+ * - Corredera: geometría APROXIMADA (no hay todavía sección SoftSlide identificada en los DXF).
  */
 
 export type Typology = 'practicable' | 'oscilobatiente' | 'corredera' | 'balconera' | 'puerta'
@@ -29,6 +28,8 @@ export interface Rect { x0: number; x1: number; y0: number; y1: number }
 
 export interface SashSpec {
   id: string
+  /** Hoja construida con la sección real (DXF) en lugar de la geometría provisional. */
+  real?: boolean
   body: Rect            // contorno exterior del cuerpo de hoja
   lip: { l: number; r: number; t: number; b: number } // solape hacia el lado interior
   face: number          // ancho visto del perfil de hoja
@@ -52,6 +53,8 @@ export interface WindowLayout {
   sashes: SashSpec[]
   modes: OpenMode[]
   label: string
+  /** true si marco y hojas usan la sección real del DXF (LivIng). */
+  real: boolean
 }
 
 export const DEFAULT_CONFIG: WindowConfig = {
@@ -81,6 +84,8 @@ export const TYPOLOGY_LEAVES: Record<Typology, (1 | 2)[]> = {
   balconera: [1, 2],
   puerta: [1],
 }
+
+import { LIVING, profileMetrics } from './profiles'
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v))
 
@@ -118,7 +123,32 @@ export function computeLayout(cfg: WindowConfig): WindowLayout {
       hinge: null, canTilt: false, slide: { dx: -((oR - oL) / 2 - ov) * 0.94 },
       handle: { side: 'right', y: (oB + oT) / 2, kind: 'pull' }, main: true,
     })
-    return { W, H, frameFace, frameDepth, frameZMin, sashes, modes: ['slide'], label: 'Corredera 2 hojas' }
+    return { W, H, frameFace, frameDepth, frameZMin, sashes, modes: ['slide'], label: 'Corredera 2 hojas', real: false }
+  }
+
+  // Ventanas y puertas practicables: sección real Schüco LivIng (DXF).
+  {
+    const m = profileMetrics(LIVING)
+    const fF = m.frameFace, fD = m.frameDepth, fZ = -fD / 2
+    const so = m.sashU0
+    const outerR: Rect = { x0: -W / 2, x1: W / 2, y0: 0, y1: H }
+    const body: Rect = { x0: outerR.x0 + so, x1: outerR.x1 - so, y0: so, y1: H - so }
+    const zMin = fZ + m.sashV0
+    const depth = m.sashV1 - m.sashV0
+    const tilt = cfg.typology === 'oscilobatiente'
+    const base = { real: true, lip: { l: 0, r: 0, t: 0, b: 0 }, face: m.sashFace, zMin, depth, slide: null }
+    const rs: SashSpec[] = []
+    const hy = (y0: number, y1: number) => (tall ? clamp(1.05, y0 + 0.3, y1 - 0.3) : (y0 + y1) / 2)
+    if (cfg.leaves === 1 || cfg.typology === 'puerta') {
+      rs.push({ ...base, id: 'A', body, hinge: 'left', canTilt: tilt, handle: { side: 'right', y: hy(body.y0, body.y1), kind: 'lever' }, main: true, panelRatio: cfg.typology === 'puerta' ? 0.36 : undefined })
+    } else {
+      const mid = 0, g2 = 0.0015
+      rs.push({ ...base, id: 'A', body: { ...body, x1: mid - g2 }, hinge: 'left', canTilt: false, handle: null, main: false })
+      rs.push({ ...base, id: 'B', body: { ...body, x0: mid + g2 }, hinge: 'right', canTilt: tilt, handle: { side: 'left', y: hy(body.y0, body.y1), kind: 'lever' }, main: true })
+    }
+    const names: Record<Typology, string> = { practicable: 'Practicable', oscilobatiente: 'Oscilobatiente', corredera: 'Corredera', balconera: 'Balconera', puerta: 'Puerta' }
+    const leavesLabel = cfg.typology === 'puerta' ? '1 hoja' : `${cfg.leaves} ${cfg.leaves === 1 ? 'hoja' : 'hojas'}`
+    return { W, H, frameFace: fF, frameDepth: fD, frameZMin: fZ, sashes: rs, modes: tilt ? ['turn', 'tilt'] : ['turn'], label: `${names[cfg.typology]} ${leavesLabel} · sección LivIng`, real: true }
   }
 
   const zMin = frameZMin + 0.01
@@ -157,5 +187,5 @@ export function computeLayout(cfg: WindowConfig): WindowLayout {
     balconera: 'Balconera', puerta: 'Puerta',
   }
   const leavesLabel = cfg.typology === 'puerta' ? '1 hoja' : `${cfg.leaves} ${cfg.leaves === 1 ? 'hoja' : 'hojas'}`
-  return { W, H, frameFace, frameDepth, frameZMin, sashes, modes, label: `${names[cfg.typology]} ${leavesLabel}` }
+  return { W, H, frameFace, frameDepth, frameZMin, sashes, modes, label: `${names[cfg.typology]} ${leavesLabel}`, real: false }
 }

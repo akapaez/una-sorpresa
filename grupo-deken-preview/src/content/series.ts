@@ -135,7 +135,7 @@ export const SERIES_INFO: SeriesInfo[] = [
     ],
     typologies: ['practicable', 'oscilobatiente', 'balconera'],
     typologiesSrc: 'living-fol',
-    pending: ['Si Deken fabrica AS, MD o ambas.', 'Si se ofrece la variante Alu Inside (folleto aportado, no aparece en la web actual).', 'Uw con las composiciones de vidrio de Deken.'],
+    pending: ['La sección 3D procede del DXF aportado; confirmar a qué versión (AS o MD) corresponde.', 'Si Deken fabrica AS, MD o ambas.', 'Si se ofrece la variante Alu Inside (folleto aportado, no aparece en la web actual).', 'Uw con las composiciones de vidrio de Deken.'],
   },
   {
     slug: 'schueco-focusing', name: 'Schüco FocusIng', variants: ['70 mm', '76 mm'], family: 'ventana', inDekenWeb: true,

@@ -68,7 +68,7 @@ No se instaló ninguna skill externa ni se hizo ninguna modificación global.
 | Catalogos/150-Catalogo.pdf (Corona S 150, 2011) | Parcial (K1) | Solo biblioteca interna. |
 | Catalogos/Acabados-Catalogo.pdf | Parcial | Es el catálogo **Schüco TopAlu** (tapas de aluminio), no una carta de colores. |
 | Catalogos/FocusIng-Catalogo.pdf, LivingSlide-Catalogo.pdf, living-catalogo.pdf | **No leídos** | El conector devuelve texto vacío (PDF de imagen o demasiado grandes: 50, 70 y 150 MB). |
-| DXF`s/ | Carpeta vacía | — |
+| DXF`s/ (~175 archivos) | «Seccion living.dxf» leído y convertido; resto inventariado | Sección real LivIng en el modelo 3D y en el corte. Pendiente identificar SoftSlide y elevadoras. |
 | Recursos-Deken/grupo-deken-kit-web | Completa | Manual de marca, tokens, logotipos SVG oficiales y favicon. |
 
 Los PDF originales **no se copian ni se publican**: la web cita título, edición y página. Las fichas son resúmenes redactados en español.
@@ -98,7 +98,7 @@ Los PDF originales **no se copian ni se publican**: la web cita título, edició
 
 | Activo | Tipo | Notas |
 |---|---|---|
-| Modelo 3D de ventana (`src/three/*`) | **Aproximación de demostración** | Geometría procedural original: perfiles ingletados, solape de hoja, junquillo, juntas, doble/triple vidrio con intercalario, manilla y bisagras. No procede de DXF ni representa ninguna serie Schüco. |
+| Modelo 3D de ventana (`src/three/*`) | **Sección real LivIng (DXF) + piezas genéricas** | Marco, hoja, junquillo, juntas y refuerzos extruidos desde el DXF de Deken. Manilla, bisagras y corredera siguen siendo aproximaciones. Las medidas del conjunto son de ejemplo. |
 | Imágenes de producto (`public/renders/*.jpg`) | **Aproximación de demostración** | Generadas desde el mismo modelo con `scripts/render-posters.mjs`. No son fotografías ni obras de Deken. |
 | Textura madera, granulado antracita, fondo de escena | Aproximación de demostración | Procedurales (canvas). No representan foils concretos. |
 | Logotipo y favicon | **Oficial** (kit web de Deken en Drive) | SVG horizontal y monograma en `src/brand/svg/`, coloreados con `currentColor`; favicon y iconos de app generados desde `favicon.svg`. |

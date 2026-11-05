@@ -169,3 +169,8 @@ export function glassEdgeMaterial() {
     color: '#7fa79a', roughness: 0.2, metalness: 0, transparent: true, opacity: 0.6,
   }))
 }
+
+/** Refuerzo de acero galvanizado (visible en cortes y despieces). */
+export function steelMaterial() {
+  return (shared.steel ??= new THREE.MeshStandardMaterial({ color: '#a7adb1', roughness: 0.42, metalness: 0.8 }))
+}

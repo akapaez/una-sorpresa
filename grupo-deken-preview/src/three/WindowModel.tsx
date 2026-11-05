@@ -3,7 +3,8 @@ import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import { PartLabel as Label } from './labels'
 import { computeLayout, type OpenMode, type SashSpec, type WindowConfig, type Rect } from './windowSpec'
-import { boxGeometry, expand, inset, rectCx, rectCy, rectH, rectW, ringGeometry, type RingGeometry } from './geometry'
+import { boxGeometry, expand, inset, profileRing, rectCx, rectCy, rectH, rectW, ringGeometry, type ProfileShape, type RingGeometry } from './geometry'
+import { LIVING_RING as LIVING, profileMetrics } from './profiles'
 import {
   finishMaterials, gasketMaterial, glassEdgeMaterial, glassMaterial, handleMaterial, hingeMaterial, spacerMaterial,
 } from './materials'
@@ -49,6 +50,26 @@ function Ring({ outer, inner, zMin, depth, finish, bevel, castShadow }: {
   )
 }
 
+/** Anillo con la sección real del DXF. `uRef` = u del canto exterior del anillo; z = z0 + v. */
+function ProfRing({ shapes, rect, uRef, z0, finish, castShadow }: {
+  shapes: ProfileShape[]; rect: Rect; uRef: number; z0: number; finish: { h: THREE.Material; v: THREE.Material } | THREE.Material; castShadow?: boolean
+}) {
+  const key = [rect.x0, rect.x1, rect.y0, rect.y1, uRef, z0].map((n) => n.toFixed(4)).join('|')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const g = useMemo(() => profileRing(shapes, rect, uRef, z0), [shapes, key])
+  useEffect(() => () => { g.h.dispose(); g.v.dispose() }, [g])
+  // Veta: las UV del perfil siguen la longitud de cada miembro → misma variante de material
+  const m = finish instanceof THREE.Material ? finish : finish.h
+  return (
+    <>
+      <mesh geometry={g.h} material={m} castShadow={castShadow} receiveShadow />
+      <mesh geometry={g.v} material={m} castShadow={castShadow} receiveShadow />
+    </>
+  )
+}
+
+const PM = profileMetrics(LIVING)
+
 function Box({ w, h, d, position, material, bevel }: { w: number; h: number; d: number; position: [number, number, number]; material: THREE.Material; bevel?: number }) {
   const geo = useMemo(() => boxGeometry(w, h, d, bevel), [w, h, d, bevel])
   useEffect(() => () => geo.dispose(), [geo])
@@ -78,13 +99,16 @@ function Sash({ s, cfg, frameFront, motionRef, showLabels, hq, override }: SashP
   const finExt = finishMaterials(cfg.finishExterior)
   const bicolor = !override && cfg.finishExterior !== cfg.finishInterior
   const isSlide = cfg.typology === 'corredera'
+  const real = !!s.real
 
   const body = s.body
   const lipRect = expand(body, s.lip.l, s.lip.r, s.lip.t, s.lip.b)
   const inner = inset(body, s.face, s.face, s.face, s.bottomFace ?? s.face)
   const zSplit = isSlide ? s.zMin + s.depth : frameFront + 0.001
-  const frontZ = isSlide ? s.zMin + s.depth : zSplit + 0.012
+  const frontZ = isSlide || real ? s.zMin + s.depth : zSplit + 0.012
   const zMin = s.zMin
+  /** Cara exterior del marco (v = 0 del DXF). */
+  const zExt = s.zMin - PM.sashV0
 
   // Vidrio y panel
   const beadW = 0.02
@@ -120,7 +144,7 @@ function Sash({ s, cfg, frameFront, motionRef, showLabels, hq, override }: SashP
   const pivotZ = frontZ - 0.002
   const turnSign = s.hinge === 'left' ? -1 : 1
 
-  const handleX = s.handle ? (s.handle.side === 'right' ? (inner.x1 + lipRect.x1) / 2 : (lipRect.x0 + inner.x0) / 2) : 0
+  const handleX = !s.handle ? 0 : real ? (s.handle.side === 'right' ? body.x1 - 0.026 : body.x0 + 0.026) : (s.handle.side === 'right' ? (inner.x1 + lipRect.x1) / 2 : (lipRect.x0 + inner.x0) / 2)
   const handleY = s.handle?.y ?? 0
   const leverSign = s.handle?.side === 'right' ? -1 : 1
 
@@ -176,8 +200,70 @@ function Sash({ s, cfg, frameFront, motionRef, showLabels, hq, override }: SashP
     <group position={[x, y, z]}>{children}</group>
   )
 
-  const content = (
+  // ---------- Hoja con sección real (DXF Schüco LivIng) ----------
+  const G = LIVING.glass
+  const realPanes: [number, number][] = triple ? [G.panes[0] && [G.panes[0][0], G.panes[1]?.[1] ?? G.panes[0][1]], [58, 60], G.panes[G.panes.length - 1]].filter(Boolean) as [number, number][] : [[G.panes[0][0], G.panes[1]?.[1] ?? G.panes[0][1]], G.panes[G.panes.length - 1]]
+  const rGlass = inset(body, PM.glassEdge)
+  const rInner = inset(body, PM.sashFace)
+  const rPanelTop = hasPanel ? rInner.y0 + rectH(rInner) * (s.panelRatio ?? 0) : rInner.y0
+  const rGlassRect: Rect = hasPanel ? { ...rGlass, y0: rPanelTop + railH } : rGlass
+  const zv = (v: number) => zExt + v / 1000
+  const realContent = (
     <group ref={explodeRef}>
+      <ProfRing shapes={LIVING.sash} rect={body} uRef={LIVING.sashU0} z0={zExt} finish={fin} castShadow />
+      {bicolor && <Ring outer={inset(body, 0.034)} inner={inset(body, 0.079)} zMin={zv(20) - 0.0013} depth={0.0012} bevel={0} finish={finExt} />}
+
+      <group ref={glassRef}>
+        {realPanes.map(([a, b], i) => <Pane key={i} rect={rGlassRect} z={zv((a + b) / 2)} t={(b - a) / 1000} material={gm} />)}
+        {realPanes.slice(0, -1).map(([, b], i) => (
+          <Ring key={'sp' + i} outer={inset(rGlassRect, 0.0034)} inner={inset(rGlassRect, 0.0132)} zMin={zv(b)} depth={(realPanes[i + 1][0] - b) / 1000} bevel={0.0003} finish={spacerMaterial()} />
+        ))}
+        <Ring outer={expand(rGlassRect, 0.0004)} inner={inset(rGlassRect, 0.0004)} zMin={zv(realPanes[0][0])} depth={(realPanes[realPanes.length - 1][1] - realPanes[0][0]) / 1000} bevel={0} finish={glassEdgeMaterial()} />
+        {hasPanel && (
+          <>
+            <Box w={rectW(rInner) + 0.03} h={railH} d={0.06} position={[rectCx(rInner), rPanelTop + railH / 2, zv(70)]} material={fin.h} />
+            <Box w={rectW(rGlass)} h={rPanelTop - rGlass.y0} d={0.03} position={[rectCx(rGlass), (rGlass.y0 + rPanelTop) / 2, zv(57)]} material={fin.h} bevel={0.004} />
+          </>
+        )}
+        {showLabels && s.main && (
+          <Label position={[rectCx(rInner) - rectW(rInner) * 0.05, rectCy(rGlassRect) + rectH(rGlassRect) * 0.16, zv(75)]} text={triple ? 'Vidrio · triple' : 'Vidrio · doble'} opacityRef={motionRef} />
+        )}
+      </group>
+
+      <group ref={gasketRef}>
+        <ProfRing shapes={LIVING.gasket_sash} rect={body} uRef={LIVING.sashU0} z0={zExt} finish={gasketMaterial()} />
+        {showLabels && s.main && (
+          <Label position={[rInner.x0 + 0.004, rectCy(rInner) - rectH(rInner) * 0.2, zv(80)]} text="Juntas" opacityRef={motionRef} align="left" />
+        )}
+      </group>
+
+      <group ref={beadRef}>
+        <ProfRing shapes={LIVING.bead} rect={body} uRef={LIVING.sashU0} z0={zExt} finish={fin} />
+        {showLabels && s.main && (
+          <Label position={[rInner.x1 - 0.012, rectCy(rInner) - rectH(rInner) * 0.3, frontZ - 0.004]} text="Junquillo" opacityRef={motionRef} />
+        )}
+      </group>
+
+      {s.handle && (
+        <group ref={handleRef} position={[handleX, handleY, frontZ]}>
+          <Box w={0.03} h={0.078} d={0.012} position={[0, -0.008, 0.006]} material={handleMaterial()} bevel={0.004} />
+          <group ref={leverRef} position={[0, 0, 0.02]}>
+            <mesh material={handleMaterial()} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -0.004]}>
+              <cylinderGeometry args={[0.0085, 0.0085, 0.018, 24]} />
+            </mesh>
+            <Box w={0.019} h={0.125} d={0.013} position={[0, -0.055, 0.009]} material={handleMaterial()} bevel={0.0055} />
+          </group>
+          {showLabels && <Label position={[0.02, -0.05, 0.05]} text="Manilla" opacityRef={motionRef} />}
+        </group>
+      )}
+
+      {showLabels && s.main && (
+        <Label position={[rectCx(body) + rectW(body) * 0.18, body.y1 - PM.sashFace / 2, frontZ]} text="Hoja · perfil LivIng" opacityRef={motionRef} />
+      )}
+    </group>
+  )
+
+  const content = real ? realContent : (    <group ref={explodeRef}>
       {/* Hoja: cuerpo + solape interior */}
       <Ring outer={body} inner={inner} zMin={zMin} depth={zSplit - zMin} finish={fin} castShadow />
       {!isSlide && <Ring outer={lipRect} inner={inner} zMin={zSplit} depth={frontZ - zSplit} finish={fin} castShadow />}
@@ -295,11 +381,21 @@ export function WindowModel({ cfg, motionRef, showLabels = true, hq = true, over
   return (
     <group>
       {/* MARCO — fijo, nunca se mueve con la hoja */}
-      <Ring outer={outer} inner={opening} zMin={frameZMin} depth={frameDepth} finish={fin} bevel={0.003} castShadow />
-      {bicolor && <Ring outer={inset(outer, 0.0015)} inner={expand(opening, 0.0015)} zMin={frameZMin - 0.0011} depth={0.0012} bevel={0} finish={finExt} />}
+      {layout.real ? (
+        <>
+          <ProfRing shapes={LIVING.frame} rect={outer} uRef={0} z0={frameZMin} finish={fin} castShadow />
+          <ProfRing shapes={LIVING.gasket_frame} rect={outer} uRef={0} z0={frameZMin} finish={gasketMaterial()} />
+          {bicolor && <Ring outer={inset(outer, 0.0006)} inner={inset(outer, 0.046)} zMin={frameZMin - 0.0013} depth={0.0012} bevel={0} finish={finExt} />}
+        </>
+      ) : (
+        <>
+          <Ring outer={outer} inner={opening} zMin={frameZMin} depth={frameDepth} finish={fin} bevel={0.003} castShadow />
+          {bicolor && <Ring outer={inset(outer, 0.0015)} inner={expand(opening, 0.0015)} zMin={frameZMin - 0.0011} depth={0.0012} bevel={0} finish={finExt} />}
+        </>
+      )}
 
       {/* Junta de marco (visible al abrir) */}
-      {!isSlide && (
+      {!isSlide && !layout.real && (
         <Ring outer={expand(opening, 0.0075)} inner={expand(opening, 0.0012)} zMin={frameFront} depth={0.0028} bevel={0.0005} finish={gasketMaterial()} />
       )}
 
@@ -313,7 +409,7 @@ export function WindowModel({ cfg, motionRef, showLabels = true, hq = true, over
         const lipX = s.hinge === 'left' ? s.body.x0 - s.lip.l : s.body.x1 + s.lip.r
         const ys = [s.body.y0 + 0.11, s.body.y1 - 0.11]
         return ys.map((y, i) => (
-          <mesh key={s.id + 'h' + i} position={[lipX, y, frameFront + 0.008]} material={hingeMaterial()}>
+          <mesh key={s.id + 'h' + i} position={[lipX, y, s.real ? s.zMin + s.depth - 0.004 : frameFront + 0.008]} material={hingeMaterial()}>
             <cylinderGeometry args={[0.0075, 0.0075, 0.065, 20]} />
           </mesh>
         ))
@@ -324,7 +420,7 @@ export function WindowModel({ cfg, motionRef, showLabels = true, hq = true, over
       ))}
 
       {showLabels && (
-        <Label position={[outer.x0 + frameFace / 2, outer.y1 - H * 0.22, frameFront]} text="Marco · fijo" opacityRef={motionRef} align="left" />
+        <Label position={[outer.x0 + frameFace / 2, outer.y1 - H * 0.22, frameFront]} text={layout.real ? 'Marco · perfil LivIng' : 'Marco · fijo'} opacityRef={motionRef} align="left" />
       )}
     </group>
   )

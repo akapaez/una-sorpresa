@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Link, useParams } from 'react-router'
 import { ArrowRight, FileText, Info } from 'lucide-react'
 import { DOCS, FINISH_RANGE, SERIES_INFO, seriesBySlug, type SeriesInfo, type Spec } from '@/content/series'
@@ -6,6 +7,8 @@ import { Button } from '@/ui/Button'
 import { Poster } from '@/ui/Poster'
 import { OpeningGlyph } from '@/ui/OpeningGlyph'
 import NotFound from './NotFound'
+
+const SectionViewer = lazy(() => import('@/tools/SectionViewer'))
 
 export const SERIES_POSTER: Record<string, string> = {
   'schueco-ct-70': '/renders/detalle-blanco.jpg',
@@ -132,6 +135,20 @@ function SeriesPage({ s }: { s: SeriesInfo }) {
         <p className="text-[1.35rem] font-semibold leading-snug tracking-tight text-ink md:text-[2rem]">{s.intro}</p>
         {!s.inDekenWeb && <p className="mt-4 text-[0.9rem] text-warn">Sistema documentado; disponibilidad en Deken por confirmar.</p>}
       </section>
+
+      {s.slug === 'schueco-living' && (
+        <section className="dark-scene bg-black text-white" data-theme="dark">
+          <div className="mx-auto max-w-[1100px] px-4 pt-16 text-center sm:px-6 md:pt-24">
+            <p className="label text-green">Sección real, desde el plano DXF</p>
+            <h2 className="display mt-4 text-[2.2rem] md:text-[3.6rem]">Por dentro, al milímetro.</h2>
+            <p className="mx-auto mt-4 max-w-xl text-fog-2">Marco de 70 × 82 mm, hoja con refuerzo de acero, juntas en dos planos, junquillo y triple vidrio. Arrastra para girar.</p>
+          </div>
+          <Suspense fallback={<div className="h-[70svh] min-h-[460px]" />}>
+            <SectionViewer className="mx-auto h-[70svh] min-h-[460px] max-w-[1300px]" />
+          </Suspense>
+          <p className="label pb-10 text-center !text-[0.58rem] text-white/45">Geometría: «Seccion living.dxf» (carpeta DXF de Deken) · vidrio intermedio simplificado</p>
+        </section>
+      )}
 
       {/* Características */}
       <section className="mx-auto max-w-[1440px] px-4 pb-16 sm:px-6 lg:px-10">

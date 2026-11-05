@@ -4,7 +4,7 @@
 
 | Material previsto | Estado | Tratamiento en la previsualización |
 |---|---|---|
-| DXF de perfiles y secciones | **Carpeta creada en Drive, vacía** | Geometría provisional con estructura sustituible (`src/three/geometry.ts`: cada perfil es un anillo de 4 miembros ingletados a partir de dos rectángulos; un DXF futuro sustituiría el contorno por la sección real extruida). |
+| DXF de perfiles y secciones | **Aportados** (~175 archivos en Drive, muchos duplicados «from Despacho / 13innova-pc») | Se usa «Seccion living.dxf» (conjunto LivIng completo y posicionado): marco, hoja, junquillo, juntas, refuerzos y vidrio. Practicable, oscilobatiente, balconera y puerta se construyen ya con esa sección real. La corredera sigue siendo aproximada. |
 | Catálogos y folletos Schüco | **Aportados en Drive** (5 folletos, 7 catálogos) | Fichas por serie (`/series/*`), comparador y biblioteca con valores y página de origen. Tres catálogos sin texto extraíble (FocusIng, LivingSlide, LivIng). |
 | Documentación de herrajes | **No aportado** | Manilla y bisagras genéricas. |
 | Vidrios, persianas y accesorios | **No aportado** | Vidrio transparente/privacidad y doble/triple como representación visual. |
@@ -39,6 +39,13 @@ A petición de Cristian, la portada adopta el lenguaje de una página de product
 
 **Fotografías:** Cristian aportará fotos y vídeos propios. Los huecos están en `src/content/media.ts` (de momento con renders provisionales y aviso visible). Para sustituir uno: copiar la foto a `public/media/` y cambiar `src`, `alt` y `provisional: false`.
 
+## Perfiles reales desde DXF
+
+- **Conversión:** `scripts/dxf/dxf_to_profile.py` (Python + ezdxf) lee el DXF, resuelve los bloques, aplana arcos (tolerancia 0,06 mm), clasifica las piezas por capa (`PVC_OUTSIDE/INSIDE`, `STEEL_OUTSIDE`, `GASKET_*`, `GLAS_*`) y guarda solo los contornos en `src/three/profiles/living.json` (47 kB). **El DXF original no se publica.**
+- **Modelo:** `profileRing()` extruye cada sección a lo largo de los cuatro lados con ingletes a 45° exactos. En la ventana montada se omiten las cámaras interiores (no se ven y aligeran la escena); el corte de sección (`SectionModel`) sí las muestra.
+- **Corte 3D:** nuevo visor «Por dentro, al milímetro» en la portada y en la ficha LivIng, con giro, etiquetas y separación de piezas. Imagen de respaldo `public/renders/seccion-living.jpg`.
+- **Simplificaciones declaradas:** el vidrio intermedio del triple no venía como sólido en el DXF y se dibuja de 2 mm; los calzos de acristalamiento se omiten; herrajes, bisagras y manilla siguen siendo genéricos.
+
 ## Supuestos a confirmar con Deken
 
 1. Santiponce como ubicación que se puede citar públicamente (se usa como «referencia geográfica»).
@@ -52,7 +59,9 @@ A petición de Cristian, la portada adopta el lenguaje de una página de product
 
 ## Activos provisionales que se deben sustituir
 
-- `src/three/geometry.ts` / `windowSpec.ts` → secciones reales desde DXF (comprobar unidades y escala; los DXF suelen venir en mm).
+- Corredera y elevadoras → identificar en la carpeta DXF las secciones SoftSlide / LivingSlide / FocusIngSlide (archivos SCC*, 98xx, «Marcos y Guias», etc.) y convertirlas con `scripts/dxf/dxf_to_profile.py`.
+- Puerta → usar la sección de hoja de puerta real (hoy usa la hoja de ventana LivIng).
+- Ventana de 2 hojas → falta el perfil de encuentro central (inversor); hoy las dos hojas se encuentran sin él.
 - `src/three/materials.ts` → acabados reales (color/foil) y su nomenclatura.
 - `public/renders/*` → regenerar con `npm run render:posters` tras cambiar el modelo, o sustituir por fotografía propia.
 - `src/content/series.ts` → completar con los catálogos que no se pudieron leer (FocusIng, LivingSlide, LivIng) y con los Ug/Uw de las composiciones de Deken.

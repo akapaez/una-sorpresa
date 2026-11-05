@@ -35,6 +35,7 @@ const jobs = [
   { name: 'acabado-blanco', w: 1500, h: 1500, q: P({ t: 'practicable', l: 2, f: 'blanco', cam: '0.85,0.98,4.7', look: '0,0.86,0' }) },
   { name: 'acabado-antracita', w: 1500, h: 1500, q: P({ t: 'practicable', l: 2, f: 'antracita', cam: '0.85,0.98,4.7', look: '0,0.86,0' }) },
   { name: 'acabado-madera', w: 1500, h: 1500, q: P({ t: 'practicable', l: 2, f: 'madera', cam: '0.85,0.98,4.7', look: '0,0.86,0' }) },
+  { name: 'seccion-living', w: 1600, h: 1300, q: P({ scene: 'section', cam: '0.19,0.07,0.32', look: '0.005,0.03,-0.03', fov: 30 }) },
   { name: 'cierre', w: 1200, h: 900, q: P({ t: 'practicable', l: 2, f: 'antracita', open: 0.85, cam: '1.9,1.15,3.2', look: '-0.25,0.75,0.25' }) },
 ]
 
@@ -45,7 +46,7 @@ for (const j of jobs) {
   await page.goto(`${base}/_render?${j.q}`, { waitUntil: 'load' })
   await page.waitForSelector('canvas', { timeout: 60000 })
   await page.waitForTimeout(9000)
-  await page.screenshot({ path: `${out}${j.name}.jpg`, type: 'jpeg', quality: 84, timeout: 180000 })
+  await page.screenshot({ path: `${out}${j.name}.jpg`, type: 'jpeg', quality: 84, timeout: 400000 })
   console.log('ok', j.name)
   await page.close()
 }

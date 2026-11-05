@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, type ReactNode } from 'react'
+import { lazy, Suspense, useLayoutEffect, useMemo, useRef, type ReactNode } from 'react'
 import { Link } from 'react-router'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -17,6 +17,8 @@ import { asset } from '@/lib/asset'
 
 gsap.registerPlugin(ScrollTrigger)
 
+const SectionViewer = lazy(() => import('@/tools/SectionViewer'))
+
 const H2 = 'display text-[2.6rem] leading-[1.02] sm:text-[3.8rem] lg:text-[5rem]'
 const LEAD = 'mx-auto max-w-[40rem] text-[1.1rem] leading-snug md:text-[1.35rem]'
 
@@ -29,6 +31,7 @@ export default function Home() {
       <Typologies />
       <Finishes />
       <Systems />
+      <Inside />
       <Comfort />
       <Process />
       <Tools />
@@ -237,6 +240,22 @@ function Systems() {
       </ul>
       <p className="mx-auto mt-12 max-w-[46rem] px-5 text-center text-[0.76rem] text-ink-3">Valores del fabricante para la configuración ensayada ({Object.values(DOCS).filter((d) => d.kind !== 'web Deken').length} folletos y catálogos Schüco; las elevadoras, según la web actual de Deken). Uw depende del vidrio y de la medida de cada ventana.</p>
       <div className="mt-8 text-center"><MoreLink to="/series">Comparar las series</MoreLink></div>
+    </section>
+  )
+}
+
+function Inside() {
+  return (
+    <section className="dark-scene bg-black pt-28 text-white md:pt-40" data-theme="dark">
+      <div className="mx-auto max-w-[1200px] px-5 text-center">
+        <p className="label text-green">Sección real · Schüco LivIng</p>
+        <h2 className={`${H2} mt-5`}>82 milímetros.<br /><span className="text-fog-3">Ni uno de relleno.</span></h2>
+        <p className={`${LEAD} mt-6 text-fog-2`}>Este corte sale del plano DXF del perfil: cámaras, refuerzo de acero, juntas, junquillo y triple vidrio en su posición exacta. Gíralo y sepáralo.</p>
+      </div>
+      <Suspense fallback={<div className="h-[78svh] min-h-[520px]" />}>
+        <SectionViewer className="mx-auto mt-6 h-[78svh] min-h-[520px] max-w-[1400px]" />
+      </Suspense>
+      <p className="label pb-16 text-center !text-[0.58rem] text-white/45">Geometría de la sección: plano DXF de Deken · el vidrio intermedio se representa simplificado</p>
     </section>
   )
 }
