@@ -30,6 +30,12 @@
 - **Indexación:** `noindex, nofollow` en `index.html` y `robots.txt` con `Disallow: /`. Es control de indexación, no protección de acceso.
 - **Sin analítica, píxeles ni cookies de terceros.** Fuentes servidas desde el proyecto.
 
+## Rediseño de la portada (estilo página de producto)
+
+A petición de Cristian, la portada adopta el lenguaje de una página de producto tipo Apple: composición centrada, frases cortas en letra muy grande, textos cuya opacidad sigue al desplazamiento, mucho negro y blanco, una idea por pantalla, imágenes a sangre, galería horizontal fijada, fundido de acabados y cabecera fina. En la web pública el control de demostración pasa a ser un botón flotante.
+
+**Fotografías:** Cristian aportará fotos y vídeos propios. Los huecos están en `src/content/media.ts` (de momento con renders provisionales y aviso visible). Para sustituir uno: copiar la foto a `public/media/` y cambiar `src`, `alt` y `provisional: false`.
+
 ## Supuestos a confirmar con Deken
 
 1. Santiponce como ubicación que se puede citar públicamente (se usa como «referencia geográfica»).
