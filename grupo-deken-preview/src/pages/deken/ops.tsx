@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { CheckCircle2, Clock3, XCircle, FilePlus2, Send, ListChecks, ArrowRight } from 'lucide-react'
 import { useDemo, filesFor, threadsFor, linkLabel, ORDER_FLOW, ORDER_STATUS_LABEL } from '@/demo/store'
 import type { FileKind, LinkRef, OrderStatus } from '@/demo/types'
@@ -135,7 +135,8 @@ export function Professionals() {
 /* ------------------------------------ Solicitudes ------------------------------------ */
 export function Requests() {
   const s = useDemo()
-  const [tab, setTab] = useState<'presupuesto' | 'publicas' | 'conversaciones'>(() => new URLSearchParams(location.search).get('tab') === 'conversaciones' ? 'conversaciones' : 'presupuesto')
+  const [search] = useSearchParams()
+  const [tab, setTab] = useState<'presupuesto' | 'publicas' | 'conversaciones'>(() => search.get('tab') === 'conversaciones' ? 'conversaciones' : 'presupuesto')
   const nav = useNavigate()
   const markContact = (id: string) => useDemo.setState((st) => ({ contacts: st.contacts.map((c) => c.id === id ? { ...c, status: 'respondida' } : c) }))
   return (

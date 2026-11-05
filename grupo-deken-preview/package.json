@@ -9,7 +9,7 @@
     "typecheck": "tsc -b --noEmit",
     "preview": "vite preview",
     "render:posters": "node scripts/render-posters.mjs",
-    "build:pages": "BASE_PATH=/una-sorpresa/deken/ npm run build && cp dist/index.html dist/404.html"
+    "build:pages": "BASE_PATH=/una-sorpresa/deken/ VITE_HASH_ROUTER=1 npm run build"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "5.3.0",

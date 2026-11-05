@@ -1,5 +1,5 @@
 import { lazy, Suspense, type ReactNode } from 'react'
-import { createBrowserRouter, RouterProvider, Outlet, ScrollRestoration } from 'react-router'
+import { createBrowserRouter, createHashRouter, RouterProvider, Outlet, ScrollRestoration } from 'react-router'
 import { DemoBar } from '@/layouts/DemoBar'
 import { PublicLayout } from '@/layouts/PublicLayout'
 import { ProLayout, DekenLayout } from '@/layouts/AppShell'
@@ -34,10 +34,13 @@ function Root() {
   )
 }
 
-// basename: raíz en local; subcarpeta cuando se publica (BASE_PATH)
+// Local: rutas normales. GitHub Pages (VITE_HASH_ROUTER=1): rutas con # para que recargar o abrir
+// un enlace interior funcione sin configurar el servidor.
+const useHash = import.meta.env.VITE_HASH_ROUTER === '1'
 const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
+const createRouter = useHash ? createHashRouter : createBrowserRouter
 
-const router = createBrowserRouter([
+const router = createRouter([
   { path: '/_render', element: S(<RenderPoster />) },
   {
     element: <Root />,
@@ -99,7 +102,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-], { basename })
+], useHash ? {} : { basename })
 
 export function App() {
   return <RouterProvider router={router} />
